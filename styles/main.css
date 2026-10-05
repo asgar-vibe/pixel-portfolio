@@ -1,0 +1,1837 @@
+/* ==========================================================================
+   16-Bit Super Famicom / Retro Scrollytelling Resume Stylesheet
+   Subject: Akira Waewbandhit (Asgar) - Student Prodigy
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap');
+
+:root {
+  --font-retro: 'Press Start 2P', monospace;
+  --font-pixel: 'Silkscreen', monospace;
+  --font-terminal: 'VT323', monospace;
+
+  /* SNES Palette Highlights */
+  --snes-dark: #12101a;
+  --snes-purple: #5c3c92;
+  --snes-gold: #fbbf24;
+  --snes-amber: #f59e0b;
+  --snes-cyan: #38bdf8;
+  --snes-emerald: #10b981;
+  --snes-rose: #f43f5e;
+  --snes-border: #2e1065;
+  --snes-hud-bg: rgba(15, 12, 28, 0.92);
+}
+
+/* Global Reset & Pixel Rendering */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  /* Force vertical scroll capability */
+  background-color: var(--snes-dark);
+  color: #f8fafc;
+  font-family: var(--font-pixel);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Typography Helpers */
+.font-retro {
+  font-family: var(--font-retro);
+}
+
+.font-pixel {
+  font-family: var(--font-pixel);
+}
+
+.font-terminal {
+  font-family: var(--font-terminal);
+}
+
+/* ==========================================================================
+   16-Bit Pixel Border & UI Box Utilities
+   ========================================================================== */
+.pixel-box {
+  background: #1e1b4b;
+  border: 4px solid #ffffff;
+  box-shadow:
+    0 0 0 4px #0f0a1c,
+    inset 0 0 0 2px rgba(255, 255, 255, 0.25),
+    0 8px 0 rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.pixel-box-gold {
+  background: #2b1f09;
+  border: 4px solid #facc15;
+  box-shadow:
+    0 0 0 4px #451a03,
+    inset 0 0 0 2px rgba(254, 240, 138, 0.3),
+    0 8px 0 rgba(0, 0, 0, 0.5);
+}
+
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  font-family: var(--font-retro);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #4338ca;
+  border: 3px solid #ffffff;
+  box-shadow:
+    0 0 0 3px #1e1b4b,
+    0 4px 0 #0f0a1c;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.pixel-btn:active,
+.pixel-btn.pressed {
+  transform: translateY(3px);
+  box-shadow:
+    0 0 0 3px #1e1b4b,
+    0 1px 0 #0f0a1c;
+}
+
+.pixel-btn-gold {
+  background: #d97706;
+  border-color: #fef08a;
+  box-shadow:
+    0 0 0 3px #78350f,
+    0 4px 0 #451a03;
+}
+
+.pixel-btn-emerald {
+  background: #059669;
+  border-color: #a7f3d0;
+  box-shadow:
+    0 0 0 3px #064e3b,
+    0 4px 0 #022c22;
+}
+
+/* ==========================================================================
+   Game Viewport & Camera Scrollytelling Setup
+   ========================================================================== */
+#viewport-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 10;
+  pointer-events: none; /* Let wheel and touches pass through to window */
+}
+
+/* Allow interactive items within viewport to be clicked & hovered */
+#viewport-container .milestone-item,
+#viewport-container .stage-intro-card,
+#viewport-container a,
+#viewport-container button {
+  pointer-events: auto;
+}
+
+/* Scroll Driver: Creates the dynamic scrollable height calculated in animation.js */
+#scroll-driver {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* World Container: Translates horizontally across all 6 stages */
+#world-track {
+  display: flex;
+  height: 100%;
+  width: max-content;
+  will-change: transform;
+}
+
+/* Each Stage Section */
+.stage-section {
+  position: relative;
+  width: 100vw;
+  min-width: 960px; /* Guarantees items on mobile never collide and have generous walking room */
+  height: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Stage 1 Expanded Width to accommodate 5 educational milestone waypoints, obstacles & Yaowarat */
+.stage-section.stage-expanded,
+#stage-1,
+#stage-profile {
+  width: 180vw;
+  min-width: 1950px;
+}
+
+/* Parallax Layers inside each stage */
+.parallax-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.parallax-mid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.stage-ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 3;
+}
+
+.stage-items-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+/* ==========================================================================
+   Character Avatar & Walk Animation
+   ========================================================================== */
+#character-container {
+  position: fixed;
+  bottom: 110px; /* Stands on stage-ground line */
+  left: 20%;
+  width: 80px;
+  height: 105px;
+  z-index: 20;
+  pointer-events: none;
+  transform-origin: bottom center;
+  transition: width 0.2s ease, height 0.2s ease;
+}
+
+
+
+.character-sprite-holder {
+  width: 100%;
+  height: 100%;
+  transform-origin: bottom center;
+  transition: transform 0.1s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.character-png-stack {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.character-png-sprite {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Directional X-flip on inner sprite holder */
+#character-container.facing-left .character-sprite-holder {
+  transform: scaleX(-1);
+}
+
+#character-container.facing-right .character-sprite-holder {
+  transform: scaleX(1);
+}
+
+#character-container.walking {
+  animation: character-bob 0.22s infinite alternate ease-in-out;
+}
+
+#character-container.floating {
+  animation: character-float 2.5s infinite ease-in-out;
+}
+
+#character-container.jumping {
+  animation: character-jump 0.45s ease-out;
+}
+
+@keyframes character-bob {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+@keyframes character-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+
+@keyframes character-jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-60px); }
+  100% { transform: translateY(0); }
+}
+
+/* Horizontal Swimming Diver Posture (Stage 4 Ocean)
+   The diver is drawn in a horizontal aspect ratio (160x115).
+   Enlarged container width and height (140px x 102px) so the diver's body length
+   and visual proportions match the vertical standing characters (~105px). */
+#character-container.swimming-diver {
+  width: 140px;
+  height: 102px;
+}
+
+#character-container.swimming-diver .character-sprite-holder {
+  transform-origin: center center;
+  align-items: center;
+  justify-content: center;
+  animation: character-swim 1.6s infinite ease-in-out;
+}
+
+#character-container.swimming-diver .character-png-stack {
+  align-items: center;
+  justify-content: center;
+}
+
+#character-container.swimming-diver .character-png-sprite {
+  object-position: center center;
+}
+
+#character-container.swimming-diver.facing-left .character-sprite-holder {
+  transform-origin: center center;
+  animation: character-swim-left 1.6s infinite ease-in-out;
+}
+
+@keyframes character-swim {
+  0%, 100% { transform: rotate(-2deg) translateY(0); }
+  50% { transform: rotate(4deg) translateY(-6px); }
+}
+
+@keyframes character-swim-left {
+  0%, 100% { transform: rotate(2deg) scaleX(-1) translateY(0); }
+  50% { transform: rotate(-4deg) scaleX(-1) translateY(-6px); }
+}
+
+/* Zero-G Cosmic Astronaut Float (Stage 6 Orbit) */
+#character-container.zero-g-float .character-sprite-holder {
+  animation: character-zero-g 3.4s infinite ease-in-out;
+}
+
+#character-container.zero-g-float.facing-left .character-sprite-holder {
+  animation: character-zero-g-left 3.4s infinite ease-in-out;
+}
+
+@keyframes character-zero-g {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-16px) rotate(5deg); }
+  66% { transform: translateY(10px) rotate(-4deg); }
+}
+
+@keyframes character-zero-g-left {
+  0%, 100% { transform: translateY(0) rotate(0deg) scaleX(-1); }
+  33% { transform: translateY(-16px) rotate(-5deg) scaleX(-1); }
+  66% { transform: translateY(10px) rotate(4deg) scaleX(-1); }
+}
+
+/* ==========================================================================
+   Interactive Stage Obstacles & Foreground Parallax
+   ========================================================================== */
+.stage-obstacle {
+  position: absolute;
+  bottom: 120px;
+  z-index: 8;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+}
+
+.parallax-fg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140%;
+  height: 100%;
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* Underwater Rising Bubbles (Stage 4) */
+.ocean-bubbles-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.pixel-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(224, 242, 254, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.9);
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+  animation: bubble-float linear infinite;
+}
+
+@keyframes bubble-float {
+  0% {
+    transform: translateY(100vh) translateX(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-80px) translateX(25px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* Rugged Cave & Mountain Slope Ground Elements */
+.rugged-ground-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Dynamic Stage Atmospheric Effects: City, Bats, Snowfall, Stars, Ocean
+   ========================================================================== */
+
+/* 0. Stage 1: Bangkok Skyline (BTS Skytrain, Yaowarat Neon, River Shimmer, Birds, Tuk-Tuk) */
+.bts-train-running {
+  will-change: transform;
+}
+
+.bts-train-east {
+  animation: bts-run-east 25s linear infinite;
+}
+
+.bts-train-west {
+  animation: bts-run-west 28s linear infinite;
+  animation-delay: 12s;
+}
+
+@keyframes bts-run-east {
+  0% {
+    transform: translate(-450px, 192px);
+  }
+  100% {
+    transform: translate(3950px, 192px);
+  }
+}
+
+@keyframes bts-run-west {
+  0% {
+    transform: translate(3950px, 192px) scaleX(-1);
+  }
+  100% {
+    transform: translate(-450px, 192px) scaleX(-1);
+  }
+}
+
+/* Flying Sunset Swallows */
+.city-flying-birds-1 {
+  animation: city-birds-drift 22s linear infinite;
+  will-change: transform;
+}
+
+.city-flying-birds-2 {
+  animation: city-birds-drift 26s linear infinite;
+  animation-delay: 10s;
+  will-change: transform;
+}
+
+@keyframes city-birds-drift {
+  0% {
+    transform: translate(-250px, 0);
+  }
+  50% {
+    transform: translate(1800px, -18px);
+  }
+  100% {
+    transform: translate(3950px, 6px);
+  }
+}
+
+/* Yaowarat Chinatown Glowing Neon Signs */
+.neon-glow-red {
+  animation: neon-pulse-red 2.4s infinite ease-in-out;
+}
+
+.neon-glow-green {
+  animation: neon-pulse-green 3.1s infinite ease-in-out 0.6s;
+}
+
+.neon-glow-amber {
+  animation: neon-pulse-amber 2.8s infinite ease-in-out 1.2s;
+}
+
+.neon-glow-cyan {
+  animation: neon-pulse-cyan 3.5s infinite ease-in-out 1.8s;
+}
+
+@keyframes neon-pulse-red {
+  0%, 100% { opacity: 0.92; filter: drop-shadow(0 0 2px #ef4444); }
+  50% { opacity: 1; filter: drop-shadow(0 0 8px #ef4444) drop-shadow(0 0 16px #dc2626); }
+}
+
+@keyframes neon-pulse-green {
+  0%, 100% { opacity: 0.92; filter: drop-shadow(0 0 2px #10b981); }
+  50% { opacity: 1; filter: drop-shadow(0 0 8px #10b981) drop-shadow(0 0 16px #059669); }
+}
+
+@keyframes neon-pulse-amber {
+  0%, 100% { opacity: 0.92; filter: drop-shadow(0 0 2px #facc15); }
+  50% { opacity: 1; filter: drop-shadow(0 0 8px #facc15) drop-shadow(0 0 16px #eab308); }
+}
+
+@keyframes neon-pulse-cyan {
+  0%, 100% { opacity: 0.92; filter: drop-shadow(0 0 2px #38bdf8); }
+  50% { opacity: 1; filter: drop-shadow(0 0 8px #38bdf8) drop-shadow(0 0 16px #0284c7); }
+}
+
+/* Red Chinese Paper Lanterns Swaying in Breeze */
+.yaowarat-lantern-chain {
+  transform-origin: 2000px 240px;
+  animation: lantern-sway 4.5s infinite ease-in-out alternate;
+}
+
+@keyframes lantern-sway {
+  0% {
+    transform: rotate(-1deg);
+  }
+  100% {
+    transform: rotate(1.2deg);
+  }
+}
+
+/* Chao Phraya River Twilight Reflection Shimmer */
+.river-ripple-line {
+  animation: river-shimmer 2.8s infinite ease-in-out alternate;
+}
+
+@keyframes river-shimmer {
+  0% {
+    opacity: 0.4;
+    transform: scaleX(0.96);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scaleX(1.04);
+  }
+}
+
+/* Tuk-Tuk Obstacle Idle Vibration */
+.stage-obstacle[data-obstacle-id="tuktuk"] {
+  animation: tuktuk-rumble 0.2s infinite alternate ease-in-out;
+  transform-origin: bottom center;
+}
+
+@keyframes tuktuk-rumble {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-1.5px);
+  }
+}
+
+/* 1. Stage 3: Cave Bats */
+.bat-wing-flap {
+  transform-origin: center top;
+  animation: bat-wing-cycle 0.22s infinite alternate ease-in-out;
+}
+
+@keyframes bat-wing-cycle {
+  0% { transform: scaleY(1); }
+  100% { transform: scaleY(-0.75); }
+}
+
+.flying-bat-1 {
+  animation: bat-flight-1 11s infinite linear;
+}
+
+.flying-bat-2 {
+  animation: bat-flight-2 8.5s infinite linear 3s;
+}
+
+.flying-bat-3 {
+  animation: bat-flight-3 14s infinite linear 6s;
+}
+
+@keyframes bat-flight-1 {
+  0% { transform: translate(-80px, 45px) scale(0.7); opacity: 0; }
+  10% { opacity: 0.95; }
+  35% { transform: translate(420px, 95px) scale(0.9); }
+  65% { transform: translate(780px, 40px) scale(0.85); }
+  90% { opacity: 0.95; }
+  100% { transform: translate(1250px, 75px) scale(0.75); opacity: 0; }
+}
+
+@keyframes bat-flight-2 {
+  0% { transform: translate(1250px, 85px) scaleX(-1) scale(0.7); opacity: 0; }
+  12% { opacity: 0.95; }
+  45% { transform: translate(680px, 45px) scaleX(-1) scale(0.85); }
+  75% { transform: translate(320px, 90px) scaleX(-1) scale(0.75); }
+  90% { opacity: 0.95; }
+  100% { transform: translate(-60px, 60px) scaleX(-1) scale(0.65); opacity: 0; }
+}
+
+@keyframes bat-flight-3 {
+  0% { transform: translate(-60px, 110px) scale(0.6); opacity: 0; }
+  15% { opacity: 0.9; }
+  50% { transform: translate(600px, 60px) scale(0.8); }
+  85% { opacity: 0.9; }
+  100% { transform: translate(1280px, 115px) scale(0.6); opacity: 0; }
+}
+
+.hanging-bat-eye {
+  animation: bat-eye-blink 4.2s infinite ease-in-out;
+}
+
+.hanging-bat-eye-alt {
+  animation: bat-eye-blink 3.4s infinite ease-in-out 1.2s;
+}
+
+@keyframes bat-eye-blink {
+  0%, 86%, 92%, 100% { opacity: 0.15; fill: #7f1d1d; }
+  88%, 91% { opacity: 1; fill: #ef4444; filter: drop-shadow(0 0 3px #f87171); }
+}
+
+/* 2. Stage 5: Falling Snow / Blizzard */
+.snow-fall-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 7;
+}
+
+.pixel-snowflake {
+  position: absolute;
+  top: -15px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(224, 242, 254, 0.9);
+  animation: snowfall-drift linear infinite;
+}
+
+@keyframes snowfall-drift {
+  0% {
+    transform: translateY(-20px) translateX(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.95;
+  }
+  92% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(105vh) translateX(-90px);
+    opacity: 0.1;
+  }
+}
+
+/* 3. Stage 6: Twinkling Sparkling Stars */
+.starfield-twinkle-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.twinkle-star-fast {
+  animation: star-twinkle-fast 1.6s infinite alternate ease-in-out;
+}
+
+.twinkle-star-mid {
+  animation: star-twinkle-mid 2.4s infinite alternate ease-in-out;
+}
+
+.twinkle-star-slow {
+  animation: star-twinkle-slow 3.6s infinite alternate ease-in-out;
+}
+
+.diamond-star-glint {
+  animation: diamond-star-flare 2.8s infinite alternate ease-in-out;
+}
+
+@keyframes star-twinkle-fast {
+  0% { opacity: 0.15; transform: scale(0.6); }
+  100% { opacity: 1; transform: scale(1.4); filter: drop-shadow(0 0 5px currentColor); }
+}
+
+@keyframes star-twinkle-mid {
+  0% { opacity: 0.2; transform: scale(0.7); }
+  100% { opacity: 1; transform: scale(1.3); filter: drop-shadow(0 0 6px currentColor); }
+}
+
+@keyframes star-twinkle-slow {
+  0% { opacity: 0.25; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.2); filter: drop-shadow(0 0 7px currentColor); }
+}
+
+@keyframes diamond-star-flare {
+  0% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.5) rotate(45deg); filter: drop-shadow(0 0 8px #fef08a); }
+  100% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
+}
+
+.shooting-star-streak,
+.shooting-star-streak-1 {
+  position: absolute;
+  top: 12%;
+  left: 15%;
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(56,189,248,0.7) 40%, #ffffff 100%);
+  transform-origin: right center;
+  transform: rotate(32deg);
+  animation: shooting-star-anim-1 8s infinite ease-in;
+}
+
+.shooting-star-streak-1::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.95), 0 0 10px 4px rgba(56, 189, 248, 0.85);
+}
+
+.shooting-star-streak-2 {
+  position: absolute;
+  top: 25%;
+  left: 55%;
+  width: 110px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(244,63,94,0.7) 50%, #fef08a 100%);
+  transform-origin: right center;
+  transform: rotate(38deg);
+  animation: shooting-star-anim-2 11s infinite ease-in 4s;
+}
+
+.shooting-star-streak-2::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.95), 0 0 10px 4px rgba(244, 63, 94, 0.85);
+}
+
+@keyframes shooting-star-anim-1 {
+  0%, 72% { opacity: 0; transform: translate(0, 0) rotate(32deg) scaleX(0); }
+  75% { opacity: 1; transform: translate(70px, 44px) rotate(32deg) scaleX(1); }
+  82% { opacity: 1; transform: translate(520px, 325px) rotate(32deg) scaleX(1.5); }
+  85% { opacity: 0; transform: translate(640px, 400px) rotate(32deg) scaleX(0.2); }
+  100% { opacity: 0; transform: translate(640px, 400px) rotate(32deg) scaleX(0); }
+}
+
+@keyframes shooting-star-anim-2 {
+  0%, 75% { opacity: 0; transform: translate(0, 0) rotate(38deg) scaleX(0); }
+  78% { opacity: 1; transform: translate(60px, 47px) rotate(38deg) scaleX(1); }
+  85% { opacity: 1; transform: translate(480px, 375px) rotate(38deg) scaleX(1.3); }
+  88% { opacity: 0; transform: translate(580px, 453px) rotate(38deg) scaleX(0.2); }
+  100% { opacity: 0; transform: translate(580px, 453px) rotate(38deg) scaleX(0); }
+}
+
+/* Space Station Beacons & Radar */
+.nav-beacon-red {
+  animation: nav-beacon-red-blink 1.2s infinite ease-in-out;
+}
+
+.nav-beacon-green {
+  animation: nav-beacon-green-blink 1.2s infinite ease-in-out 0.6s;
+}
+
+.nav-beacon-white {
+  animation: nav-beacon-white-blink 2.2s infinite ease-in-out;
+}
+
+@keyframes nav-beacon-red-blink {
+  0%, 100% { opacity: 0.2; fill: #7f1d1d; }
+  50% { opacity: 1; fill: #ef4444; filter: drop-shadow(0 0 6px #f87171); }
+}
+
+@keyframes nav-beacon-green-blink {
+  0%, 100% { opacity: 0.2; fill: #064e3b; }
+  50% { opacity: 1; fill: #10b981; filter: drop-shadow(0 0 6px #34d399); }
+}
+
+@keyframes nav-beacon-white-blink {
+  0%, 88%, 94%, 100% { opacity: 0.2; }
+  90%, 92% { opacity: 1; fill: #ffffff; filter: drop-shadow(0 0 8px #ffffff); }
+}
+
+.radio-wave-pulse {
+  animation: radar-pulse 3s infinite ease-out;
+  transform-origin: 1090px 285px;
+}
+
+@keyframes radar-pulse {
+  0% { transform: scale(0.6); opacity: 0.8; stroke-width: 3; }
+  100% { transform: scale(2.2); opacity: 0; stroke-width: 0.5; }
+}
+
+/* Astronaut Zero-G Jetpack Thruster Glow */
+#character-container.zero-g-float::after {
+  content: '';
+  position: absolute;
+  bottom: 22px;
+  left: 6px;
+  width: 14px;
+  height: 22px;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.95) 0%, rgba(14, 165, 233, 0.4) 50%, transparent 100%);
+  border-radius: 50%;
+  filter: blur(2px);
+  animation: thruster-pulse 0.4s infinite alternate ease-in-out;
+  pointer-events: none;
+  z-index: -1;
+}
+
+#character-container.zero-g-float.facing-left::after {
+  left: auto;
+  right: 6px;
+}
+
+@keyframes thruster-pulse {
+  0% { transform: scale(0.7) translateY(0); opacity: 0.4; }
+  100% { transform: scale(1.3) translateY(4px); opacity: 0.95; }
+}
+
+/* 4. Stage 4: Swimming Marine Life in Visible Screen Area */
+.ocean-creatures-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.sea-creature {
+  position: absolute;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* 1. Clownfish: Patrols back and forth around Stage 4 left-center (15% to 35%) */
+.creature-clownfish {
+  bottom: 225px;
+  left: 20%;
+  animation: clownfish-patrol 14s infinite ease-in-out;
+}
+
+/* 2. Blue Tang: Patrols back and forth around center-right (42% to 68%) */
+.creature-bluetang {
+  bottom: 310px;
+  left: 54%;
+  animation: bluetang-patrol 16s infinite ease-in-out -5s;
+}
+
+/* 3. Sea Turtle: Glides gracefully across wide mid-upper swimming zone (25% to 75%) */
+.creature-turtle {
+  bottom: 385px;
+  left: 32%;
+  animation: turtle-glide 24s infinite ease-in-out -10s;
+}
+
+/* 4. Yellow Tang: Nimble quick patrol around right side (68% to 92%) */
+.creature-yellowtang {
+  bottom: 245px;
+  left: 78%;
+  animation: yellowtang-patrol 13s infinite ease-in-out -3s;
+}
+
+/* 5. Glowing Jellyfish: Gently pulsating and drifting vertically and horizontally */
+.creature-jellyfish {
+  bottom: 300px;
+  left: 46%;
+  animation: jellyfish-drift 6s infinite ease-in-out;
+}
+
+/* Natural back-and-forth swimming animations with correct turn-around flips */
+@keyframes clownfish-patrol {
+  0% {
+    transform: translateX(0) translateY(0) scaleX(1);
+  }
+  24% {
+    transform: translateX(-140px) translateY(-18px) scaleX(1);
+  }
+  48% {
+    transform: translateX(-270px) translateY(12px) scaleX(1);
+  }
+  50% {
+    transform: translateX(-270px) translateY(12px) scaleX(-1);
+  }
+  74% {
+    transform: translateX(-130px) translateY(-14px) scaleX(-1);
+  }
+  98% {
+    transform: translateX(0) translateY(0) scaleX(-1);
+  }
+  100% {
+    transform: translateX(0) translateY(0) scaleX(1);
+  }
+}
+
+@keyframes bluetang-patrol {
+  0% {
+    transform: translateX(0) translateY(0) scaleX(-1);
+  }
+  24% {
+    transform: translateX(180px) translateY(18px) scaleX(-1);
+  }
+  48% {
+    transform: translateX(310px) translateY(-16px) scaleX(-1);
+  }
+  50% {
+    transform: translateX(310px) translateY(-16px) scaleX(1);
+  }
+  74% {
+    transform: translateX(130px) translateY(15px) scaleX(1);
+  }
+  98% {
+    transform: translateX(0) translateY(0) scaleX(1);
+  }
+  100% {
+    transform: translateX(0) translateY(0) scaleX(-1);
+  }
+}
+
+@keyframes turtle-glide {
+  0% {
+    transform: translateX(0) translateY(0) scaleX(-1);
+  }
+  25% {
+    transform: translateX(230px) translateY(-22px) scaleX(-1);
+  }
+  48% {
+    transform: translateX(460px) translateY(12px) scaleX(-1);
+  }
+  50% {
+    transform: translateX(460px) translateY(12px) scaleX(1);
+  }
+  75% {
+    transform: translateX(220px) translateY(-18px) scaleX(1);
+  }
+  98% {
+    transform: translateX(0) translateY(0) scaleX(1);
+  }
+  100% {
+    transform: translateX(0) translateY(0) scaleX(-1);
+  }
+}
+
+@keyframes yellowtang-patrol {
+  0% {
+    transform: translateX(0) translateY(0) scaleX(1);
+  }
+  24% {
+    transform: translateX(-130px) translateY(15px) scaleX(1);
+  }
+  48% {
+    transform: translateX(-260px) translateY(-14px) scaleX(1);
+  }
+  50% {
+    transform: translateX(-260px) translateY(-14px) scaleX(-1);
+  }
+  74% {
+    transform: translateX(-120px) translateY(16px) scaleX(-1);
+  }
+  98% {
+    transform: translateX(0) translateY(0) scaleX(-1);
+  }
+  100% {
+    transform: translateX(0) translateY(0) scaleX(1);
+  }
+}
+
+@keyframes jellyfish-drift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1, 1);
+  }
+  30% {
+    transform: translate(22px, -34px) scale(0.9, 1.15);
+  }
+  60% {
+    transform: translate(-18px, -16px) scale(1.06, 0.94);
+  }
+  80% {
+    transform: translate(12px, 12px) scale(0.96, 1.04);
+  }
+}
+
+
+
+/* ==========================================================================
+   Stage Specific Thematic Visuals
+   ========================================================================== */
+
+/* Stage 1: Bangkok Skyline */
+.theme-city {
+  background: linear-gradient(180deg, #170d30 0%, #3e1b48 45%, #933857 75%, #d97746 100%);
+}
+
+.city-skyline {
+  position: absolute;
+  bottom: 120px;
+  width: 100%;
+  height: 280px;
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+/* Stage 2: Forest Path */
+.theme-forest {
+  background: linear-gradient(180deg, #031c15 0%, #0d3826 45%, #185a3a 80%, #29824c 100%);
+}
+
+/* Stage 3: Crystal Cave */
+.theme-cave {
+  background: linear-gradient(180deg, #080314 0%, #17082e 50%, #2f0f56 85%, #4c1d95 100%);
+}
+
+/* Stage 4: Ocean Deep Dive */
+.theme-ocean {
+  background: linear-gradient(180deg, #021220 0%, #042742 40%, #07476f 75%, #0c6a99 100%);
+}
+
+/* Stage 5: Frozen Peak */
+.theme-ice {
+  background: linear-gradient(180deg, #040d1a 0%, #0c233c 45%, #184160 80%, #477b9b 100%);
+}
+
+/* Stage 6: Orbit & Beyond */
+.theme-space {
+  background: radial-gradient(ellipse at 80% 25%, #2a0845 0%, #110022 35%, #050012 65%, #010006 100%);
+}
+
+/* Terrain Ground Strips (16-bit tiles) */
+.ground-tile-city {
+  background: #334155;
+  border-top: 6px solid #64748b;
+  box-shadow: inset 0 6px 0 #475569;
+}
+
+.ground-tile-forest {
+  background: #271a0c;
+  border-top: 8px solid #22c55e;
+  box-shadow: inset 0 8px 0 #15803d;
+}
+
+.ground-tile-cave {
+  background: #1e1135;
+  border-top: 7px solid #7e22ce;
+  box-shadow: inset 0 7px 0 #581c87;
+}
+
+.ground-tile-ocean {
+  background: #0f172a;
+  border-top: 8px solid #0284c7;
+  box-shadow: inset 0 8px 0 #0369a1;
+}
+
+.ground-tile-ice {
+  background: #162438;
+  border-top: 8px solid #e0f2fe;
+  box-shadow: inset 0 8px 0 #7dd3fc;
+}
+
+.ground-tile-space {
+  background: transparent;
+  border-top: none;
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   Milestones & Interactive Items System
+   ========================================================================== */
+.milestone-item {
+  position: absolute;
+  bottom: 124px;
+  /* Placed cleanly upon ground tiles */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  pointer-events: auto;
+}
+
+.milestone-item:hover {
+  transform: translateY(-8px) scale(1.06);
+}
+
+.milestone-item.major-item {
+  z-index: 12;
+}
+
+.milestone-item.minor-item {
+  z-index: 10;
+}
+
+/* Item Pedestal / Glow aura */
+.item-aura {
+  position: absolute;
+  bottom: 0;
+  width: 50px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.6) 0%, rgba(250, 204, 21, 0) 80%);
+  animation: aura-pulse 2s infinite ease-in-out;
+}
+
+@keyframes aura-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.3);
+    opacity: 0.9;
+  }
+}
+
+/* Floating Icon animation */
+.item-icon-wrapper {
+  animation: pixel-float 2.2s infinite ease-in-out;
+}
+
+@keyframes pixel-float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Milestone Floating Badge Text above icon (no box, floating up & down) */
+.milestone-floating-badge {
+  position: absolute;
+  left: 50%;
+  top: -26px;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-weight: bold;
+  font-size: 10px;
+  color: #fef08a;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95), 0 0 3px #000;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: badge-float 1.2s infinite alternate ease-in-out;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes badge-float {
+  0% {
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+.milestone-floating-badge.floating-badge-major {
+  top: -28px;
+  font-size: 11px;
+  color: #fef08a;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95), 0 0 3px #000;
+  letter-spacing: 0.5px;
+}
+
+.milestone-floating-badge.floating-badge-minor {
+  top: -24px;
+  font-size: 8.5px;
+  color: #fef9c3;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95), 0 0 2px #000;
+  letter-spacing: 0.3px;
+}
+
+/* Certificate Gallery in Modal (Scrollable Multi-Photo Strip) */
+.certificate-gallery-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #facc15 #0f172a;
+}
+
+.certificate-gallery-scroll::-webkit-scrollbar {
+  height: 7px;
+}
+
+.certificate-gallery-scroll::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 4px;
+}
+
+.certificate-gallery-scroll::-webkit-scrollbar-thumb {
+  background: #facc15;
+  border-radius: 4px;
+  border: 1px solid #78350f;
+}
+
+.certificate-gallery-scroll::-webkit-scrollbar-thumb:hover {
+  background: #fef08a;
+}
+
+/* Custom icon image & fallback */
+.milestone-custom-icon {
+  image-rendering: auto;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.65));
+}
+
+.milestone-fallback-chest {
+  width: 100%;
+  height: 100%;
+}
+
+/* Minor item speech bubble / summary */
+.minor-speech-bubble {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid #38bdf8;
+  padding: 8px 10px;
+  box-shadow: 0 4px 0 #000;
+  font-size: 9px;
+  color: #e2e8f0;
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.milestone-item:hover .minor-speech-bubble {
+  transform: translateX(-50%) translateY(-6px);
+  opacity: 1;
+}
+
+.minor-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: #38bdf8 transparent transparent transparent;
+}
+
+/* Stage Intro Banner */
+.stage-intro-card {
+  position: absolute;
+  top: 90px;
+  left: 60px;
+  background: rgba(10, 8, 20, 0.88);
+  border: 4px solid #facc15;
+  box-shadow:
+    0 0 0 4px #000,
+    0 8px 0 rgba(0, 0, 0, 0.6);
+  padding: 14px 20px;
+  max-width: 440px;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   Stage 1: School Educational Waypoint Signboards (Standing Landmarks)
+   ========================================================================== */
+.school-milestone-item {
+  position: absolute;
+  bottom: 124px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 12;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: bottom center;
+}
+
+.school-milestone-item:hover {
+  transform: translateY(-6px) scale(1.03);
+}
+
+/* Standing Waypoint Signboard */
+.school-signboard {
+  width: 290px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 15, 30, 0.98) 100%);
+  border: 3px solid #facc15;
+  box-shadow:
+    0 0 0 3px #1e1135,
+    0 8px 24px rgba(0, 0, 0, 0.7);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  border-radius: 2px;
+}
+
+/* Color thematic borders per educational step */
+.school-step-1 .school-signboard {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px #064e3b, 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+.school-step-2 .school-signboard {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px #075985, 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+.school-step-3 .school-signboard {
+  border-color: #a855f7;
+  box-shadow: 0 0 0 3px #581c87, 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+.school-step-4 .school-signboard {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px #78350f, 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+.school-step-5 .school-signboard {
+  border-color: #facc15;
+  box-shadow: 0 0 0 3px #713f12, 0 0 20px rgba(250, 204, 21, 0.35), 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+/* Signboard Header */
+.school-signboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 5px;
+}
+
+.school-step-badge {
+  font-family: var(--font-retro);
+  font-size: 8px;
+  font-weight: bold;
+  background: #facc15;
+  color: #0f172a;
+  padding: 1px 5px;
+  line-height: normal;
+}
+.school-step-1 .school-step-badge { background: #10b981; color: #022c22; }
+.school-step-2 .school-step-badge { background: #38bdf8; color: #082f49; }
+.school-step-3 .school-step-badge { background: #c084fc; color: #3b0764; }
+.school-step-4 .school-step-badge { background: #fbbf24; color: #451a03; }
+.school-step-5 .school-step-badge { background: #facc15; color: #422006; }
+
+.school-year-badge {
+  font-family: var(--font-retro);
+  font-size: 8px;
+  color: #fef08a;
+  background: rgba(254, 240, 138, 0.12);
+  border: 1px solid rgba(254, 240, 138, 0.35);
+  padding: 1px 5px;
+}
+
+.school-status-badge {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  font-weight: bold;
+  color: #86efac;
+  background: rgba(22, 101, 52, 0.8);
+  border: 1px solid #22c55e;
+  padding: 1px 5px;
+}
+
+.school-status-badge.school-status-alumnus {
+  color: #94a3b8;
+  background: rgba(30, 41, 59, 0.8);
+  border-color: #475569;
+}
+
+/* School Title */
+.school-title {
+  font-family: var(--font-retro);
+  font-size: 11px;
+  line-height: 1.35;
+  color: #ffffff;
+  margin: 1px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+.school-step-5 .school-title {
+  color: #fef08a;
+}
+
+/* 2-Column Meta Layout: Left = School Name & Level stacked, Right = Location */
+.school-meta-grid {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 2px 0 4px 0;
+}
+
+.school-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+.school-level-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: #7dd3fc;
+  background: rgba(12, 74, 110, 0.4);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 1px 6px;
+  width: fit-content;
+}
+
+.school-location-tag {
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+  font-family: var(--font-pixel);
+  font-size: 8.5px;
+  color: #cbd5e1;
+  line-height: 1.25;
+  max-width: 48%;
+  word-break: break-word;
+}
+
+/* Summary Box */
+.school-summary-box {
+  background: rgba(2, 6, 23, 0.65);
+  border-left: 3px solid #38bdf8;
+  padding: 5px 8px;
+  margin-top: 2px;
+}
+.school-step-1 .school-summary-box { border-left-color: #10b981; }
+.school-step-2 .school-summary-box { border-left-color: #38bdf8; }
+.school-step-3 .school-summary-box { border-left-color: #c084fc; }
+.school-step-4 .school-summary-box { border-left-color: #f59e0b; }
+.school-step-5 .school-summary-box { border-left-color: #facc15; }
+
+.school-summary-text {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  line-height: 1.45;
+  color: #e2e8f0;
+}
+
+/* Subtle tap hint */
+.school-tap-hint {
+  font-family: var(--font-retro);
+  font-size: 6px;
+  color: rgba(250, 204, 21, 0.7);
+  text-align: right;
+  margin-top: 1px;
+}
+
+/* Signpost Legs */
+.school-sign-posts {
+  display: flex;
+  justify-content: space-between;
+  width: 140px;
+  height: 38px;
+  position: relative;
+  z-index: 1;
+}
+
+.sign-post-leg {
+  width: 8px;
+  height: 100%;
+  background: #78350f;
+  border-left: 2px solid #b45309;
+  border-right: 2px solid #451a03;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.5);
+}
+
+/* School Icon floating between posts */
+.school-icon-wrapper {
+  position: absolute;
+  bottom: 6px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8));
+  animation: pixel-float 2.4s infinite ease-in-out;
+}
+
+.school-icon-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.school-item-aura {
+  width: 60px;
+  height: 14px;
+  bottom: 0px;
+}
+
+
+
+/* ==========================================================================
+   HUD (Heads-Up Display)
+   ========================================================================== */
+#hud-header {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+#hud-header>* {
+  pointer-events: auto;
+}
+
+.hud-panel {
+  background: var(--snes-hud-bg);
+  border: 3px solid #ffffff;
+  box-shadow:
+    0 0 0 3px #1e1b4b,
+    0 4px 0 rgba(0, 0, 0, 0.6);
+  padding: 8px 12px;
+}
+
+/* Health / Progress Bar */
+.retro-meter-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.retro-meter-bar {
+  width: 140px;
+  height: 14px;
+  background: #1e1b4b;
+  border: 2px solid #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.retro-meter-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #10b981 0%, #facc15 70%, #f43f5e 100%);
+  transition: width 0.1s ease-out;
+}
+
+/* ==========================================================================
+   Bottom Virtual Controls (Touch / Click Hold-to-Walk)
+   ========================================================================== */
+#virtual-controls {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+#virtual-controls>* {
+  pointer-events: auto;
+}
+
+.virtual-dpad {
+  display: flex;
+  gap: 12px;
+}
+
+.ctrl-btn {
+  width: 68px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-retro);
+  font-size: 9px;
+  color: #ffffff;
+  background: #312e81;
+  border: 3px solid #ffffff;
+  box-shadow:
+    0 0 0 3px #0f0a1c,
+    0 5px 0 #000;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.06s ease, background 0.06s ease;
+}
+
+.ctrl-btn:active,
+.ctrl-btn.active {
+  transform: translateY(4px);
+  box-shadow:
+    0 0 0 3px #0f0a1c,
+    0 1px 0 #000;
+  background: #4338ca;
+}
+
+.ctrl-action-btn {
+  width: 100px;
+  background: #b45309;
+  border-color: #fde047;
+  color: #fffbeb;
+  box-shadow:
+    0 0 0 3px #451a03,
+    0 5px 0 #000;
+}
+
+.ctrl-action-btn:active,
+.ctrl-action-btn.active {
+  background: #d97706;
+}
+
+/* ==========================================================================
+   Retro Dialog Modal
+   ========================================================================== */
+#retro-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+#retro-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#retro-modal-window {
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #0f111a;
+  border: 4px solid #facc15;
+  box-shadow:
+    0 0 0 4px #000000,
+    0 16px 32px rgba(0, 0, 0, 0.85);
+  transform: scale(0.92);
+  transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+#retro-modal-overlay.open #retro-modal-window {
+  transform: scale(1);
+}
+
+/* Modal Custom Scrollbar */
+#retro-modal-window::-webkit-scrollbar {
+  width: 8px;
+}
+
+#retro-modal-window::-webkit-scrollbar-track {
+  background: #090a0f;
+}
+
+#retro-modal-window::-webkit-scrollbar-thumb {
+  background: #facc15;
+  border: 2px solid #000;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 768px) {
+  #hud-header {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .hud-panel {
+    padding: 3px 6px;
+    border-width: 2px;
+    box-shadow: 0 0 0 2px #1e1b4b, 0 3px 0 rgba(0, 0, 0, 0.6);
+  }
+
+  .retro-meter-bar {
+    width: 70px;
+    height: 9px;
+  }
+
+  #btn-toggle-sound {
+    padding: 3px 6px;
+    font-size: 7px;
+  }
+
+  .stage-intro-card {
+    top: 76px;
+    left: 10px;
+    max-width: min(340px, calc(100vw - 20px));
+    padding: 10px 12px;
+  }
+
+  /* Mobile Stage 1 expanded width & educational waypoint signs */
+  .stage-section.stage-expanded,
+  #stage-1,
+  #stage-profile {
+    width: 550vw;
+    min-width: 2500px; /* Generous breathing room: ~400px distance between signs and natural background proportions */
+  }
+
+  .school-milestone-item {
+    bottom: 96px;
+  }
+
+  .school-signboard {
+    width: 210px;
+    max-width: calc(100vw - 48px);
+    padding: 8px 10px;
+    gap: 4px;
+  }
+
+  .school-title {
+    font-size: 8.5px;
+  }
+
+  .school-step-badge,
+  .school-year-badge,
+  .school-status-badge {
+    font-size: 6px;
+  }
+
+  .school-level-tag,
+  .school-location-tag,
+  .school-summary-text {
+    font-size: 7.5px;
+  }
+
+  .school-sign-posts {
+    width: 90px;
+    height: 24px;
+  }
+
+  .school-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    bottom: 3px;
+  }
+
+  .stage-obstacle {
+    bottom: 94px;
+  }
+
+  #character-container {
+    bottom: 96px;
+    width: 64px;
+    height: 84px;
+  }
+
+  #character-container.swimming-diver {
+    width: 112px;
+    height: 82px;
+  }
+
+  .stage-ground {
+    height: 96px;
+  }
+
+  .milestone-item {
+    bottom: 98px;
+  }
+
+  .ctrl-btn {
+    width: 58px;
+    height: 50px;
+    font-size: 8px;
+  }
+
+  .ctrl-action-btn {
+    width: 82px;
+  }
+}

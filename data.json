@@ -1,0 +1,460 @@
+﻿{
+  profile: {
+    name: "Akira Waewbandhit",
+    nickname: "Asgar",
+    birthday: "18 August 2013",
+    age: 13,
+    title: "Passionate academic competitor specializing in advanced mathematics and Python / C++ programming",
+    currentGrade: "Secondary 2",
+    school: "Panyarat High School",
+    location: "Bangkok, Thailand",
+    stats: {
+      math: 99,
+      problemSolving: 90,
+      coding: 89,
+      english: 89,
+      thai: 25,
+      sport: 67,
+      roblox: 100,
+      minecraft: 100
+    },
+    email: "akira.asgar@gmail.com",
+    like: "Fried Chicken, KFC, Crispy Fried Seaweed",
+    dislike: "All kinds of vegetables and fruits",
+    hobby: "playing Games, Chess, Table Tennis, and Swimming.",
+    motto: "Never argue with a 90ยฐ angle. It's always RIGHT!"
+  },
+
+  stages: [
+    {
+      id: "stage-1",
+      number: 1,
+      title: "Bangkok",
+      subtitle: "Personal Foundation & Early Sparks",
+      period: "SINCE 2013",
+      theme: "city",
+      costume: "school",
+      costumeName: "Cadet Uniform",
+      costumeDesc: "Classic school uniform ready for foundational studies and logic exploration.",
+      palette: {
+        skyTop: "#1a103c",
+        skyBottom: "#e26a6a",
+        ground: "#2a2d43",
+        accent: "#f4d06f"
+      },
+      description: " ",
+      items: [
+        {
+          id: "school-1",
+          year: "2016-2019",
+          title: "Kwongchow School",
+          level: "Kindergarten 1 - Primary 1",
+          location: "525 Silom Road, Bangrak, Bangkok",
+          summary: "A historic school in Bangkok, originally known as Kwong Siew School, offering multi-level education with both Thai regular and English programs.",
+          image: "images/certificates/school-kwongchow.jpg"
+        },
+        {
+          id: "school-2",
+          year: "2020",
+          title: "Bangkok Thonburi Demonstration School",
+          level: "Primary 2",
+          location: "468 Liap Khlong Thawi Watthana Road, Thawi Watthana, Bangkok",
+          summary: "A modern shcool offers learning programs from pre-kindergarten up to high school, focusing on an international atmosphere and a trilingual approach.",
+          image: "images/certificates/school-bangkok-thonburi.jpg"
+        },
+        {
+          id: "school-3",
+          year: "2021-2024 ",
+          title: "Home School",
+          level: "Primary 3 - Primary 6",
+          location: "Everywhere, Internet",
+          summary: "Learning in the wider world, a time that coincided with the COVID-19 pandemic.",
+          image: "images/certificates/school-home-school.jpg"
+        },
+        {
+          id: "school-4",
+          year: "2024",
+          title: "Chindamanee School",
+          level: "Primary 6",
+          location: "41 Soi 18, Bang Mot, Chom Thong, Bangkok",
+          summary: "A pioneer bilingual school in Thailand that integrates English-language instruction with Thai cultural values.",
+          image: "images/certificates/school-chindamanee.jpg"
+        },
+        {
+          id: "school-5",
+          year: "2025 - Present",
+          title: "Panyarat High School",
+          level: "Secondary 1 - Secondary 2",
+          location: "250 Silom Soi 18, Bangrak, Bangkok",
+          summary: "Elite secondary school located in the heart of Bangkok's central business district on Silom Road.",
+          image: "images/certificates/school-panyarat.jpg"
+        }
+      ]
+    },
+
+    {
+      id: "stage-2",
+      number: 2,
+      title: "Pre-2024 Life",
+      subtitle: "Enjoy learning the way children do.",
+      period: "Pre-2024",
+      theme: "forest",
+      costume: "explorer",
+      costumeName: "Forest Scout",
+      costumeDesc: "Equipped with explorer backpack, compass, and field gear for untamed competition arenas.",
+      palette: {
+        skyTop: "#082b21",
+        skyBottom: "#459663",
+        ground: "#1b4d2e",
+        accent: "#72f285"
+      },
+      description: "Learning can take place both inside and outside the classroom. I have learned a great many things from YouTube and the internet.",
+      items: [
+        {
+          id: "forest-major-1",
+          type: "major",
+          title: "SEAMO 2023 - Southeast Asian Math Olympiad",
+          organization: "SEAMO Regional Executive Council",
+          year: "2023",
+          category: "Mathematics",
+          badge: "๐ฅ GLOBAL GOLD",
+          summary: "Gold Medalist ranking in the top 1.5% among 22 participating nations across Southeast Asia and Oceania.",
+          description: "Tackled 25 intense multi-step Olympiad problems covering Euclidean geometry, modular arithmetic, and combinatorial pigeonhole principles. Earned direct qualification to the SEAMO X Global finals.",
+          skills: ["Number Theory", "Combinatorics", "Plane Geometry", "Modular Arithmetic"],
+          stats: { rank: "Top 1.5% Asia-Pacific", score: "96/100", competitors: "12,000+" },
+          icon: "chest_gold",
+          imageTheme: "medal_seamo",
+          image: "images/certificates/seamo-2023.jpg"
+        },
+        {
+          id: "forest-minor-1",
+          type: "minor",
+          title: "TIMO 2023 Heat Round: Gold Distinction",
+          organization: "Thailand International Mathematical Olympiad",
+          year: "2023",
+          category: "Mathematics",
+          badge: "๐… GOLD",
+          summary: "Achieved full marks in Logical Thinking & Combinatorics sections.",
+          icon: "medal_gold",
+          image: "images/certificates/timo-2023.jpg"
+        },
+        {
+          id: "forest-minor-2",
+          type: "minor",
+          title: "Kangaroo Math Competition - Top 1%",
+          organization: "Kangourou sans Frontiรจres",
+          year: "2023",
+          category: "Mathematics",
+          badge: "๐ฆ DISTINCTION",
+          summary: "National First Tier honor with flawless answers in spatial visualization modules.",
+          icon: "flag",
+          image: "images/certificates/kangaroo-2023.jpg"
+        },
+        {
+          id: "forest-minor-3",
+          type: "minor",
+          title: "Bebras Computational Thinking: Perfect 100",
+          organization: "Bebras International Contest",
+          year: "2023",
+          category: "Computer Science",
+          badge: "๐’ฏ 100/100",
+          summary: "Clean sheet solve on graph traversal and finite state machine logic puzzles.",
+          icon: "chip",
+          image: "images/certificates/bebras-2023.jpg"
+        }
+      ]
+    },
+
+    {
+      id: "stage-3",
+      number: 3,
+      title: "Year 2024 Competitions",
+      subtitle: "The starting point of academic competitions",
+      period: "2024",
+      theme: "cave",
+      costume: "miner",
+      costumeName: "Crystal Miner",
+      costumeDesc: "Mining hardhat with illuminated halogen beam and rugged harness for subterranean discoveries.",
+      palette: {
+        skyTop: "#120924",
+        skyBottom: "#3c1766",
+        ground: "#23113c",
+        accent: "#d946ef"
+      },
+      description: "Started signing up for academic competitions to collect certificates, with the aim of using them for my secondary school applications. Although getting a bit of a late start, it's better than not starting at all.",
+      items: [
+        {
+          id: "cave-major-1",
+          type: "major",
+          title: "SASMO 2024 - Global Gold Award",
+          organization: "Singapore International Math Contests Centre (SIMCC)",
+          year: "2024",
+          category: "Mathematics",
+          badge: "๐’ GLOBAL GOLD",
+          summary: "Top global percentile winner at the Singapore and Asian Schools Math Olympiad, recognized among the highest scorers in Asia.",
+          description: "One of the most competitive school math contests in the world with over 35,000 contestants. Solved non-routine Olympiad problems requiring novel algorithmic insight and proof structures under tight time constraints.",
+          skills: ["Advanced Diophantine Equations", "Invariance Principles", "Geometric Transformations", "Speed Deduction"],
+          stats: { rank: "Top 0.8% Worldwide", score: "94/100", competitors: "35,000+" },
+          icon: "crystal_chest",
+          imageTheme: "certificate_sasmo",
+          image: "images/certificates/sasmo-2024.jpg"
+        },
+        {
+          id: "cave-minor-1",
+          type: "minor",
+          title: "HKIMO 2024 Final - First Prize",
+          organization: "Hong Kong International Mathematical Olympiad",
+          year: "2024",
+          category: "Mathematics",
+          badge: "๐ฅ 1ST PRIZE",
+          summary: "First Prize laureate in Hong Kong finals across Algebra and Number Theory.",
+          icon: "gem",
+          image: "images/certificates/hkimo-2024.jpg"
+        },
+        {
+          id: "cave-minor-2",
+          type: "minor",
+          title: "Junior Code Olympiad 2024 - Silver Trophy",
+          organization: "National Informatics Council",
+          year: "2024",
+          category: "Competitive Programming",
+          badge: "๐ฅ SILVER",
+          summary: "Youngest contestant to solve 4/4 algorithmic tasks in C++ (BFS/DFS, DP, Greedy).",
+          icon: "code_terminal",
+          image: "images/certificates/junior-code-2024.jpg"
+        },
+        {
+          id: "cave-minor-3",
+          type: "minor",
+          title: "WMI 2024 (World Math Invitational) - Gold Honor",
+          organization: "WMI International Organizing Committee",
+          year: "2024",
+          category: "Mathematics",
+          badge: "โจ GOLD",
+          summary: "Gold Honor in both Theory Paper and Applied Problem Solving sections.",
+          icon: "crystal",
+          image: "images/certificates/wmi-2024.jpg"
+        }
+      ]
+    },
+
+    {
+      id: "stage-4",
+      number: 4,
+      title: "Year 2025 Competitions",
+      subtitle: "Greater challenges as a scholarship student",
+      period: "2025",
+      theme: "ocean",
+      costume: "diver",
+      costumeName: "Subsea Diver",
+      costumeDesc: "Aerodynamic diving suit with oxygen tank, dual swim flippers, and dive mask with sonar HUD.",
+      palette: {
+        skyTop: "#021729",
+        skyBottom: "#0b4d75",
+        ground: "#04283f",
+        accent: "#38bdf8"
+      },
+      description: "Transition from primary to secondary, I had the opportunity to compete in a wider range of events; the challenges grew greater, and the level of success I achieved rose accordingly.",
+      items: [
+        {
+          id: "ocean-major-1",
+          type: "major",
+          title: "IJMO 2025 - International Junior Math Olympiad",
+          organization: "IJMO Executive Board & SIMCC",
+          year: "2025",
+          category: "Mathematics",
+          badge: "๐‘‘ GRAND CHAMPION",
+          summary: "Grand Champion designation representing Thailand at the IJMO World Grand Stage with a near-perfect score.",
+          description: "Invited exclusively for high-tier SASMO and AMO gold medalists. Solved complex proof-based and high-speed numerical problems. Honored on the international podium as one of the most promising young mathematical talents in Asia.",
+          skills: ["Advanced Combinatorial Geometry", "Cauchy-Schwarz Inequalities", "Modular Systems", "Graph Theory"],
+          stats: { rank: "World Podia / Grand Gold", score: "98/100", competitors: "Selected Elite" },
+          icon: "ocean_chest",
+          imageTheme: "trophy_ijmo",
+          image: "images/certificates/ijmo-2025.jpg"
+        },
+        {
+          id: "ocean-minor-1",
+          type: "minor",
+          title: "Codeforces Specialist & AtCoder Regular",
+          organization: "Competitive Programming Platforms",
+          year: "2025",
+          category: "Competitive Programming",
+          badge: "โก 1500+ RATING",
+          summary: "Ascended into competitive division 2 with consistent speed in Segment Trees and Binary Search.",
+          icon: "anchor",
+          image: "images/certificates/codeforces-2025.jpg"
+        },
+        {
+          id: "ocean-minor-2",
+          type: "minor",
+          title: "TOEFL Junior / Cambridge C1 Advanced",
+          organization: "ETS & Cambridge English",
+          year: "2025",
+          category: "Linguistics",
+          badge: "๐ C1 LEVEL",
+          summary: "Demonstrated native-equivalent academic communication, debate, and scientific paper reading.",
+          icon: "shell",
+          image: "images/certificates/cambridge-c1-2025.jpg"
+        },
+        {
+          id: "ocean-minor-3",
+          type: "minor",
+          title: "APMO Junior Invitational Track",
+          organization: "Asian Pacific Mathematics Olympiad Prep",
+          year: "2025",
+          category: "Mathematics",
+          badge: "๐”ฑ HIGH HONORS",
+          summary: "Qualified for national advanced training round with high distinction.",
+          icon: "bubble",
+          image: "images/certificates/apmo-junior-2025.jpg"
+        }
+      ]
+    },
+
+    {
+      id: "stage-5",
+      number: 5,
+      title: "Year 2026 Competitions",
+      subtitle: "Fewer competitions, select only high-impact events.",
+      period: "2026",
+      theme: "ice",
+      costume: "climber",
+      costumeName: "Arctic Mountaineer",
+      costumeDesc: "Insulated alpine expedition parka, glacier goggles, ice crampons, and thermal gloves.",
+      palette: {
+        skyTop: "#0c182a",
+        skyBottom: "#477890",
+        ground: "#1b3345",
+        accent: "#a5f3fc"
+      },
+      description: "In addition to mathematics and English, this year also marks the start of studying and competing in coding.",
+      items: [
+        {
+          id: "ice-major-1",
+          type: "major",
+          title: "National Olympiad Selection Squad (POSN Camp 2)",
+          organization: "The Promotion of Academic Olympiad and Development of Science Education Foundation",
+          year: "2026",
+          category: "Olympiad Squad",
+          badge: "๐”๏ธ OLYMPIAD ELITE",
+          summary: "Selected into POSN Advanced Training Camp 2 as the youngest candidate in the provincial center.",
+          description: "Intensive university-level mathematical curriculum covering advanced functional equations, projective geometry, and analytic number theory. Preparing for the National Mathematical Olympiad (TMO) and international team candidacy.",
+          skills: ["Functional Equations", "Projective Geometry", "Analytic Number Theory", "Advanced Proof Crafting"],
+          stats: { rank: "Top Candidate / Center Rank 1", score: "Selection Rank 1", competitors: "Top 30 Center Qualifiers" },
+          icon: "ice_beacon",
+          imageTheme: "posn_badge",
+          image: "images/certificates/posn-camp-2026.jpg"
+        },
+        {
+          id: "ice-minor-1",
+          type: "minor",
+          title: "APIO (Asia-Pacific Informatics Olympiad) Trialist",
+          organization: "National Computer Science Olympiad",
+          year: "2026",
+          category: "Competitive Programming",
+          badge: "โ๏ธ FINALIST",
+          summary: "Implemented heavy-light decomposition and persistent segment trees under contest stress.",
+          icon: "snowflake",
+          image: "images/certificates/apio-trialist-2026.jpg"
+        },
+        {
+          id: "ice-minor-2",
+          type: "minor",
+          title: "AI & CV Wildfire Detection Project",
+          organization: "Youth AI Innovation Initiative",
+          year: "2026",
+          category: "Applied Science",
+          badge: "๐ค– ML PROJECT",
+          summary: "Engineered an edge-deployable YOLOv8 tiny model to identify smoke columns in satellite imagery.",
+          icon: "drone",
+          image: "images/certificates/ai-wildfire-2026.jpg"
+        },
+        {
+          id: "ice-minor-3",
+          type: "minor",
+          title: "Global Math Challenge - World Rank 1 (Age Group)",
+          organization: "Sony Global Education / GMC",
+          year: "2026",
+          category: "Mathematics",
+          badge: "๐ฅ WORLD #1",
+          summary: "Perfect score in reasoning and rapid puzzle synthesis round.",
+          icon: "ice_crystal",
+          image: "images/certificates/global-math-2026.jpg"
+        }
+      ]
+    },
+
+    {
+      id: "stage-6",
+      number: 6,
+      title: "2027 and Beyond",
+      subtitle: "Future Aspirations & Cosmic Horizon",
+      period: "2027 to the Future",
+      theme: "space",
+      costume: "astronaut",
+      costumeName: "Cosmic Explorer",
+      costumeDesc: "Pressurized astronaut EVA suit with golden reflective sun visor and dual RCS thruster pack.",
+      palette: {
+        skyTop: "#030014",
+        skyBottom: "#190028",
+        ground: "#0e0926",
+        accent: "#facc15"
+      },
+      description: "Sharpening the focus on mathematics and coding with the aim of gaining admission to world-class schools or institutions renowned specifically for technology.",
+      items: [
+        {
+          id: "space-major-1",
+          type: "major",
+          title: "Vision: IMO & IOI National Representative",
+          organization: "World Olympiad Horizon & Top Tier University Quest",
+          year: "Future Vision",
+          category: "Grand Dream",
+          badge: "๐€ COSMIC QUEST",
+          summary: "Aspiring to represent Thailand at the International Mathematical Olympiad (IMO) and International Olympiad in Informatics (IOI).",
+          description: "Dedication to continuous learning, collaborative research, and open problem solving. Aiming to study Computer Science and Pure Mathematics at top global universities (such as MIT, Stanford, or Cambridge) to advance frontier AI and quantum algorithms.",
+          skills: ["IMO Level Problem Crafting", "High Performance Computing", "Quantum Information Theory", "Academic Leadership"],
+          stats: { target: "IMO / IOI Medals", horizon: "2027 - 2030", mission: "Impact & Research" },
+          icon: "space_capsule",
+          imageTheme: "space_vision",
+          image: "images/certificates/imo-vision-2027.jpg"
+        },
+        {
+          id: "space-minor-1",
+          type: "minor",
+          title: "Quantum Computing & Cryptography Studies",
+          organization: "Self-Directed Advanced Curriculum",
+          year: "Upcoming",
+          category: "Frontier Science",
+          badge: "๐ QUANTUM",
+          summary: "Exploring Shor's algorithm, Qiskit simulations, and lattice-based post-quantum cryptography.",
+          icon: "quantum",
+          image: "images/certificates/quantum-studies.jpg"
+        },
+        {
+          id: "space-minor-2",
+          type: "minor",
+          title: "Youth STEM & Math Olympiad Mentorship",
+          organization: "Community Open Initiative",
+          year: "Ongoing",
+          category: "Community",
+          badge: "๐ค MENTOR",
+          summary: "Hosting problem-solving workshops and distributing open-access study notes for junior students.",
+          icon: "satellite",
+          image: "images/certificates/stem-mentorship.jpg"
+        },
+        {
+          id: "space-minor-3",
+          type: "minor",
+          title: "Contact & Collaborate with Akira",
+          organization: "Open for Inquiries & Mentorship",
+          year: "Always Active",
+          category: "Contact",
+          badge: "โ๏ธ CONNECT",
+          summary: "Click here to send a transmission, view credentials, or connect on LinkedIn / GitHub.",
+          icon: "comm_dish",
+          action: "open_contact"
+        }
+      ]
+    }
+  ]
+}

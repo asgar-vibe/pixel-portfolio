@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Akira Waewbandhit (Asgar) | 16-Bit Platformer Resume</title>
+  <meta name="description"
+    content="Interactive 16-bit retro platformer resume of Akira Waewbandhit (Asgar), 13-year-old student prodigy in Mathematics, English, and Algorithmic Programming.">
+
+  <!-- Retro Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+  <!-- Main Custom CSS -->
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body class="bg-slate-950 text-slate-100 select-none">
+  <!-- =========================================================================
+       Top HUD (Heads-Up Display)
+       ========================================================================= -->
+  <header id="hud-header">
+    <!-- Left: Character Stats Card (Clickable to open RPG Status Sheet) -->
+    <div id="hud-profile-card"
+      class="hud-panel flex items-center gap-2.5 shrink-0 cursor-pointer hover:border-yellow-300 hover:bg-indigo-950 transition-all active:translate-y-0.5"
+      title="Click to view ASGAR Status Sheet">
+      <div
+        class="w-8 h-8 md:w-10 md:h-10 bg-indigo-900 border-2 border-yellow-400 p-0.5 flex items-center justify-center shrink-0 overflow-hidden">
+        <!-- Mini profile photo -->
+        <img src="images/character/profile.jpg" alt="Asgar" class="w-full h-full object-cover rounded-sm"
+          onerror="this.src='images/character/school_1.png'; this.onerror=() => { this.style.display='none'; const fb = this.nextElementSibling; if(fb) fb.style.display='block'; };" />
+        <svg viewBox="0 0 32 32" class="w-full h-full" shape-rendering="crispEdges" style="display: none;">
+          <rect x="8" y="2" width="16" height="12" fill="#1e1822" />
+          <rect x="10" y="8" width="12" height="10" fill="#ffd1a4" />
+          <rect x="12" y="11" width="2" height="2" fill="#1e1822" />
+          <rect x="18" y="11" width="2" height="2" fill="#1e1822" />
+          <rect x="10" y="18" width="12" height="12" fill="#f8fafc" />
+          <rect x="14" y="18" width="4" height="6" fill="#1e3a8a" />
+        </svg>
+      </div>
+
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span id="hud-player-name"
+            class="font-retro text-[8px] md:text-[9px] text-yellow-400 font-bold tracking-wider">
+            AKIRA (ASGAR)
+          </span>
+          <span id="hud-player-level" class="font-retro text-[7px] md:text-[8px] bg-red-600 px-1 py-0.5 text-white">
+            LVL 13
+          </span>
+        </div>
+        <div id="hud-player-title" class="hidden sm:block font-pixel text-[9px] text-indigo-200 mt-0.5">
+          Panyarat High School • Secondary 2
+        </div>
+
+        <!-- EXP / World Progress Meter -->
+        <div class="retro-meter-container mt-1">
+          <span class="font-retro text-[6px] md:text-[7px] text-emerald-400">EXP</span>
+          <div class="retro-meter-bar">
+            <div id="hud-progress-fill" class="retro-meter-fill"></div>
+          </div>
+          <span id="hud-progress-text" class="font-retro text-[6px] md:text-[7px] text-slate-300">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Standalone Retro Audio Button -->
+    <button id="btn-toggle-sound" class="pixel-btn text-[8px] md:text-[9px] px-3 py-1.5 shrink-0"
+      title="Toggle 8-Bit Audio Sound FX">
+      🔊 SOUND
+    </button>
+  </header>
+
+  <!-- =========================================================================
+       Fixed Game Viewport
+       ========================================================================= -->
+  <main id="viewport-container">
+    <!-- Horizontal World Track containing 6 Stage Sections -->
+    <div id="world-track"></div>
+
+    <!-- Pinned Character Sprite Avatar -->
+    <div id="character-container" class="facing-right">
+      <!-- SVG Sprite Rendering Container (Only This Flips) -->
+      <div class="character-sprite-holder w-full h-full"></div>
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       Scroll Driver (Generates vertical scroll space for GSAP ScrollTrigger)
+       ========================================================================= -->
+  <div id="scroll-driver" aria-hidden="true"></div>
+
+  <!-- =========================================================================
+       Bottom Virtual Controls (Mobile / Tablet / Touch / Click Hold-to-Walk)
+       ========================================================================= -->
+  <footer id="virtual-controls" aria-label="Game Controls">
+    <!-- Left: Virtual D-Pad (Walk Left / Right) -->
+    <div class="virtual-dpad">
+      <button id="btn-walk-left" class="ctrl-btn" aria-label="Walk Left">
+        <span class="text-base leading-none mb-1">◀</span>
+        <span>LEFT</span>
+      </button>
+
+      <button id="btn-walk-right" class="ctrl-btn" aria-label="Walk Right">
+        <span class="text-base leading-none mb-1">▶</span>
+        <span>RIGHT</span>
+      </button>
+    </div>
+
+    <!-- Center Prompt Hint (Desktop) -->
+    <div
+      class="hidden md:flex items-center px-4 py-2 bg-slate-950/80 border-2 border-slate-700 font-retro text-[8px] text-amber-300 pointer-events-none">
+      <span>USE MOUSE WHEEL, ARROWS [← →], OR HOLD BUTTONS TO SCROLL</span>
+    </div>
+
+    <!-- Right: Action / Jump / Inspect Button -->
+    <div>
+      <button id="btn-action" class="ctrl-btn ctrl-action-btn" aria-label="Action / Inspect Milestone">
+        <span class="text-xs mb-0.5">✦ ACTION</span>
+        <span class="text-[7px] text-yellow-200">[E] / JUMP</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       Retro Dialog Modal Window (Inspect Milestones & Certificates)
+       ========================================================================= -->
+  <div id="retro-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="retro-modal-window">
+      <!-- Modal Header Bar -->
+      <div id="retro-modal-header"
+        class="px-4 py-3 bg-purple-950 border-b-4 border-yellow-400 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span id="modal-header-icon" class="w-4 h-4 shrink-0 flex items-center justify-center">
+            <span class="w-3 h-3 bg-yellow-400 inline-block"></span>
+          </span>
+          <span id="modal-title"
+            class="font-retro text-[9.5px] md:text-xs text-yellow-300 uppercase tracking-wider truncate max-w-[65vw] sm:max-w-md">
+            ACHIEVEMENT ARCHIVE
+          </span>
+        </div>
+        <button id="retro-modal-close-btn" class="pixel-btn text-[8px] px-2 py-1 bg-red-700 border-red-300"
+          aria-label="Close modal">
+          ✕ CLOSE [ESC]
+        </button>
+      </div>
+
+      <!-- Modal Body (Injected by modal.js with 2-Column layout: Left = School Name & Level stacked, Right = Location) -->
+      <div id="retro-modal-body" class="retro-modal-body-container"></div>
+    </div>
+  </div>
+
+  <!-- Main ES6 Entrypoint -->
+  <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
