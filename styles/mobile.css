@@ -196,7 +196,7 @@ html, body {
    ========================================================================== */
 .stage-intro-card-bottom {
   position: absolute;
-  bottom: 24px;
+  bottom: calc(var(--controls-height) + 12px);
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 28px);

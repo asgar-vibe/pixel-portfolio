@@ -232,7 +232,7 @@ class MobileRetroEngine {
         title: "STAGE 6 • 5TH DIMENSION TESSERACT",
         theme: "theme-tesseract",
         costume: "astronaut",
-        height: 900 // 2 items
+        height: 1200 // 2 items
       }
     ];
   }
@@ -256,9 +256,11 @@ class MobileRetroEngine {
     // Build the 6 vertical stages & floating items (Ordered Bottom-to-Top!)
     this.buildWorld();
 
-    // Set initial position: Stage 1 (Magma Core at bottom of world)
+    // Set initial position: Stage 1 (Magma/Abyss at bottom of world)
     this.currentScrollY = 0;
     this.targetScrollY = 0;
+    this.activeJumpTargetStage = 0;
+    this.stageJumpScrollBase = 0;
     this.updateCameraAndCharacter(true);
 
     // Setup HUD, Controls, Touch, and Animation Loop
@@ -266,6 +268,12 @@ class MobileRetroEngine {
     this.setupControls();
     this.setupTouchInteractions();
     this.startRenderLoop();
+
+    // Recompute on window resize/orientation change
+    window.addEventListener('resize', () => {
+      this.computeTrackDimensions();
+      this.updateCameraAndCharacter(true);
+    });
 
     // Initialize RetroModal
     RetroModal.init();
@@ -318,10 +326,16 @@ class MobileRetroEngine {
     for (let i = this.stagesConfig.length - 1; i >= 0; i--) {
       const stg = this.stagesConfig[i];
       stg.top = accumulatedTop;
+      stg.bottom = accumulatedTop + stg.height;
       accumulatedTop += stg.height;
     }
 
     this.maxScroll = Math.max(0, this.trackHeight - window.innerHeight);
+
+    // Compute exact starting scroll position for each stage (when viewport bottom aligns with stage bottom)
+    this.stagesConfig.forEach(stg => {
+      stg.startScrollY = Math.max(0, Math.min(this.maxScroll, this.trackHeight - stg.bottom));
+    });
   }
 
   /**
@@ -1179,16 +1193,21 @@ class MobileRetroEngine {
 
   /**
    * Jump to Specific Stage
+   * Precision Stage-Aligned Target & Character Positioning
    */
   jumpToStage(stgIndex) {
     if (stgIndex < 0 || stgIndex >= this.stagesConfig.length) return;
     RetroAudio.playStageTransition();
 
-    // Stage 0 (Magma) is at currentScrollY = 0
-    // Stage 5 (Tesseract) is at currentScrollY = maxScroll
-    const ratio = stgIndex / (this.stagesConfig.length - 1);
-    this.targetScrollY = Math.round(ratio * this.maxScroll);
-    this.triggerJumpAnimation();
+    const stg = this.stagesConfig[stgIndex];
+    if (stg && typeof stg.startScrollY === 'number') {
+      this.targetScrollY = stg.startScrollY;
+      this.activeJumpTargetStage = stgIndex;
+      this.stageJumpScrollBase = stg.startScrollY;
+      this.activeStageIndex = stgIndex;
+      this.onActiveStageChanged(stg);
+      this.triggerJumpAnimation();
+    }
   }
 
   /**
@@ -1211,16 +1230,16 @@ class MobileRetroEngine {
   /**
    * Update Camera Viewport & Character Position
    * Requirement 1: Zero horizontal sway! Clean center alignment.
-   * Requirement 3: Character travels from bottom edge (Stage 1) to top edge (Stage 6).
+   * Requirement 3: Character travels from stage start (above intro card) smoothly ascending to center and peak!
    */
   updateCameraAndCharacter(force = false) {
     // 1. Camera World Translation:
-    // When currentScrollY = 0: track is translated so Magma (bottom of world) is at bottom
+    // When currentScrollY = 0: track is translated so Magma/Abyss is at bottom
     // When currentScrollY = maxScroll: track is translated so Tesseract is at top (translateY = 0)
     const translateY = -(this.maxScroll - this.currentScrollY);
     this.worldTrack.style.transform = `translate3d(0, ${translateY}px, 0)`;
 
-    // 2. Progress Ratio p from 0 (Magma) to 1 (Tesseract):
+    // 2. Progress Ratio p from 0 (Abyss) to 1 (Tesseract):
     const p = this.maxScroll > 0 ? Math.min(1, Math.max(0, this.currentScrollY / this.maxScroll)) : 0;
     const progressPercent = Math.round(p * 100);
 
@@ -1228,26 +1247,52 @@ class MobileRetroEngine {
     if (this.progressBar) this.progressBar.style.width = `${progressPercent}%`;
     if (this.progressText) this.progressText.innerText = `${progressPercent}%`;
 
-    // 3. Requirement 3: Character Y position in Viewport!
-    // At p = 0 (Stage 1 Magma): Starts all the way at the bottom of the screen!
-    // In middle stages: Floats comfortably around center (44% from top)
-    // At p = 1 (Stage 6 Tesseract): Reaches all the way to the top of the screen (68px)!
+    // 3. Precision Stage-Aligned Character Y Position:
+    // When at stage start (or right after clicking a stage switcher button):
+    // Character sits gracefully at startStageY (just above the stage intro card).
+    // As player swipes/scrolls up, character smoothly lifts off and cruises at midCenterY (44% from top).
+    // When reaching the peak of Stage 6 (Tesseract near maxScroll), character ascends to endTopY (68px).
     const vh = window.innerHeight;
-    const startBottomY = vh - 130; // Near bottom edge (above bottom bar)
     const midCenterY = vh * 0.44;   // Center traveling zone
     const endTopY = 68;             // Near top edge (below HUD)
+    const startStageY = Math.round(Math.max(midCenterY + 50, vh - 260)); // Right above stage intro card
 
     let charY = midCenterY;
-    if (p <= 0.15) {
-      // Smoothly transition from bottom edge up to center
-      const t = p / 0.15;
-      charY = startBottomY - t * (startBottomY - midCenterY);
-    } else if (p >= 0.85) {
-      // Smoothly ascend from center up to top edge!
-      const t = (p - 0.85) / 0.15;
-      charY = midCenterY - t * (midCenterY - endTopY);
+
+    if (this.activeJumpTargetStage !== null) {
+      const userScrollDelta = this.currentScrollY - this.stageJumpScrollBase;
+      const liftRange = 240;
+
+      if (userScrollDelta >= 0 && userScrollDelta < liftRange) {
+        const t = userScrollDelta / liftRange;
+        const ease = t * (2 - t);
+        charY = startStageY - ease * (startStageY - midCenterY);
+      } else if (userScrollDelta < 0 && userScrollDelta > -60) {
+        // Slight wiggle near stage start
+        charY = startStageY;
+      } else {
+        // Lifted completely to center or scrolled away into another stage
+        this.activeJumpTargetStage = null;
+        charY = midCenterY;
+      }
     } else {
-      charY = midCenterY;
+      // Natural scrolling without jump button
+      if (this.currentScrollY <= 240) {
+        const t = Math.max(0, this.currentScrollY / 240);
+        const ease = t * (2 - t);
+        charY = startStageY - ease * (startStageY - midCenterY);
+      } else {
+        charY = midCenterY;
+      }
+    }
+
+    // Peak Ascension at very end of Stage 6 (Tesseract near maxScroll)
+    const distFromEnd = this.maxScroll - this.currentScrollY;
+    const endRange = 220;
+    if (distFromEnd < endRange && this.maxScroll > 0) {
+      const t = 1 - Math.max(0, distFromEnd / endRange);
+      const ease = t * (2 - t);
+      charY = charY - ease * (charY - endTopY);
     }
 
     if (this.characterEl) {
