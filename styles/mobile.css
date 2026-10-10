@@ -743,6 +743,21 @@ html, body {
   box-shadow: 0 0 10px rgba(250, 204, 21, 0.55);
 }
 
+.back-pill-btn {
+  background: #1e1b4b;
+  border-color: #6366f1;
+  color: #c7d2fe;
+  text-decoration: none;
+}
+
+.back-pill-btn:hover,
+.back-pill-btn:active {
+  background: #312e81;
+  border-color: #facc15;
+  color: #fef08a;
+  transform: translateY(1px);
+}
+
 /* ==========================================================================
    Retro Dialog Modal Mobile Overrides
    ========================================================================== */

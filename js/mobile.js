@@ -943,9 +943,16 @@ class MobileRetroEngine {
       // Bottom-to-Top calculation:
       // idx = 0 (first item) appears at endY (BOTTOM of stage, above intro card)
       // idx = count - 1 (latest item) appears at startY (TOP of stage)
-      const topPos = count === 1
+      let topPos = count === 1
         ? Math.floor(cfg.height * 0.42)
         : Math.floor(endY - (idx * (endY - startY) / (count - 1)));
+
+      // User preference: Move Future Aspirations up a bit, and Contact down a bit
+      if (item.id === 'future-aspire') {
+        topPos = Math.floor(cfg.height * 0.46); // ~414px (moved up from 660px)
+      } else if (item.id === 'future-contact') {
+        topPos = Math.floor(cfg.height * 0.24); // ~216px (moved down from 75px)
+      }
 
       // Requirement 4: Alternating Left and Right in all scenes!
       const isLeft = (idx % 2 === 0);
@@ -1065,21 +1072,29 @@ class MobileRetroEngine {
   }
 
   /**
-   * Setup Bottom Controls: Only 6 Stage Switcher Buttons
+   * Setup Bottom Controls: Only 6 Stage Switcher Buttons + Back Button
    */
   setupControls() {
-    const stagePills = document.querySelectorAll('.stage-pill-btn');
+    const stagePills = document.querySelectorAll('.stage-pill-btn[data-stage-index]');
     stagePills.forEach(pill => {
       pill.addEventListener('click', () => {
         const stgIdx = parseInt(pill.dataset.stageIndex, 10);
         this.jumpToStage(stgIdx);
       });
     });
+
+    // Back to index.html button click sound
+    const backBtn = document.getElementById('btn-back-index');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        RetroAudio.playSelect();
+      });
+    }
   }
 
   /**
    * Setup Touch Swipe & Drag Physics anywhere on Viewport
-   * Primary navigation via SWIPE!
+   * Primary navigation via SWIPE! (Inverted as requested: swipe down to ascend, swipe up to descend)
    */
   setupTouchInteractions() {
     if (!this.viewport) return;
@@ -1101,9 +1116,9 @@ class MobileRetroEngine {
         const deltaY = currentY - this.touchLastY;
         this.touchLastY = currentY;
 
-        // Swiping finger UP (deltaY negative) -> climb UP into higher stages!
-        // Swiping finger DOWN (deltaY positive) -> descend DOWN!
-        const moveDelta = -deltaY * 1.6;
+        // Requirement 1: Swiping finger DOWN (deltaY positive) -> climb UP into higher stages!
+        // Swiping finger UP (deltaY negative) -> descend DOWN into lower stages!
+        const moveDelta = deltaY * 1.6;
         this.targetScrollY = Math.min(this.maxScroll, Math.max(0, this.targetScrollY + moveDelta));
         this.touchVelocity = moveDelta;
 
@@ -1128,9 +1143,9 @@ class MobileRetroEngine {
       this.characterEl?.classList.remove('character-walking');
     }, { passive: true });
 
-    // Mouse wheel support for testing on laptop
+    // Mouse wheel support for testing on laptop (Inverted: wheel down = descend, wheel up = ascend)
     window.addEventListener('wheel', (e) => {
-      const delta = e.deltaY * 1.3;
+      const delta = -e.deltaY * 1.3;
       this.targetScrollY = Math.min(this.maxScroll, Math.max(0, this.targetScrollY + delta));
       this.isMoving = true;
       this.characterEl?.classList.add('character-walking');
@@ -1266,10 +1281,11 @@ class MobileRetroEngine {
   onActiveStageChanged(stgCfg) {
     this.currentCostume = stgCfg.costume;
 
-    // Update Bottom Stage Switcher Pills
-    const pills = document.querySelectorAll('.stage-pill-btn');
-    pills.forEach((pill, idx) => {
-      pill.classList.toggle('active', idx === stgCfg.index);
+    // Update Bottom Stage Switcher Pills (only stage buttons, not back button)
+    const pills = document.querySelectorAll('.stage-pill-btn[data-stage-index]');
+    pills.forEach((pill) => {
+      const pIdx = parseInt(pill.dataset.stageIndex, 10);
+      pill.classList.toggle('active', pIdx === stgCfg.index);
     });
 
     // Render character costume
