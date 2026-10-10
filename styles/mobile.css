@@ -1,0 +1,807 @@
+/**
+ * Mobile 16-Bit Retro Platformer Engine Styles
+ * Akira Waewbandhit (Asgar)
+ * True Vertical Ascension (Bottom-to-Top):
+ * Stage 1 (Magma Core) -> Stage 2 (Ocean Abyss) -> Stage 3 (Skyscraper) ->
+ * Stage 4 (Rocket Launch) -> Stage 5 (Outer Space) -> Stage 6 (5th Dimension Tesseract)
+ */
+
+/* ==========================================================================
+   CSS Custom Properties & Color Tokens
+   ========================================================================== */
+:root {
+  --font-retro: 'Press Start 2P', monospace;
+  --font-pixel: 'Silkscreen', monospace;
+  --font-terminal: 'VT323', monospace;
+
+  --color-gold: #facc15;
+  --color-gold-bright: #fef08a;
+  --color-gold-dark: #ca8a04;
+
+  --hud-height: 56px;
+  --controls-height: 52px;
+}
+
+/* ==========================================================================
+   Reset & Base Mobile Rules
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #030014;
+  color: #f8fafc;
+  font-family: var(--font-pixel), monospace;
+  overscroll-behavior: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  touch-action: none;
+}
+
+.font-retro { font-family: var(--font-retro), monospace; }
+.font-pixel { font-family: var(--font-pixel), monospace; }
+.font-terminal { font-family: var(--font-terminal), monospace; }
+
+.pixel-crisp {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ==========================================================================
+   Fixed Mobile Game Viewport
+   ========================================================================== */
+#mobile-game-viewport {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 10;
+  touch-action: none;
+}
+
+/* ==========================================================================
+   Top HUD Header (Matches PC Version Profile & Sound)
+   ========================================================================== */
+#hud-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--hud-height);
+  z-index: 100;
+  background: rgba(3, 0, 20, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 2px solid #facc15;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), 0 0 10px rgba(250, 204, 21, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+/* PC-Style Profile Card */
+#hud-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 3px 6px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid #334155;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+#hud-profile-card:active {
+  transform: translateY(1px);
+  border-color: #facc15;
+  background: #1e1b4b;
+}
+
+.hud-avatar-box {
+  width: 36px;
+  height: 36px;
+  background: #1e1b4b;
+  border: 2px solid #facc15;
+  border-radius: 2px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.retro-meter-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.retro-meter-bar {
+  width: 80px;
+  height: 5px;
+  background: #090d16;
+  border: 1px solid #475569;
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.retro-meter-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #38bdf8, #a855f7);
+  transition: width 0.1s linear;
+}
+
+/* Pixel Buttons */
+.pixel-btn {
+  font-family: var(--font-retro);
+  background: #1e293b;
+  border: 2px solid #64748b;
+  color: #f8fafc;
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 2px;
+  transition: all 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.pixel-btn:active {
+  transform: translateY(1px);
+  background: #334155;
+  border-color: #facc15;
+}
+
+/* ==========================================================================
+   Vertical World Track (Translates vertically so scenes move UP)
+   ========================================================================== */
+#vertical-world-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7300px;
+  transform: translateY(0);
+  transition: transform 0.05s ease-out;
+  will-change: transform;
+}
+
+/* Common Vertical Stage Section */
+.stage-section-vertical {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Stage Intro Card at the Bottom of each Stage (PC-Style Content & Look!)
+   ========================================================================== */
+.stage-intro-card-bottom {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 28px);
+  max-width: 360px;
+  background: rgba(10, 8, 20, 0.94);
+  backdrop-filter: blur(6px);
+  border: 3px solid #facc15;
+  box-shadow: 0 0 0 2px #000, 0 6px 18px rgba(0, 0, 0, 0.85);
+  padding: 10px 12px;
+  z-index: 20;
+  pointer-events: auto;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Animated Character Container (STRICT DEAD-CENTER VERTICAL ALIGNMENT)
+   ========================================================================== */
+#character-container-mobile {
+  position: absolute;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 58px;
+  height: 74px;
+  z-index: 40;
+  pointer-events: auto;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.8));
+  margin: 0 !important;
+  will-change: top;
+}
+
+#character-container-mobile:active {
+  filter: drop-shadow(0 6px 14px rgba(250, 204, 21, 0.7));
+}
+
+.character-sprite-holder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.character-sprite-holder img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Inner Bobbing Animation (Applied to Inner Holder so Container stays dead center!) */
+.character-walking .character-sprite-holder {
+  animation: spriteStepBob 0.22s infinite alternate ease-in-out;
+}
+
+@keyframes spriteStepBob {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
+}
+
+/* Character Jump Animation (Applied strictly to Inner Holder so Container stays dead center!) */
+.character-jumping .character-sprite-holder {
+  animation: spriteJumpLocked 0.45s ease-out forwards;
+}
+
+@keyframes spriteJumpLocked {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-30px) scale(1.08); }
+  100% { transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Floating Milestone Items (Icon + Aura + Title on Left & Right)
+   ========================================================================== */
+.milestone-item-mobile {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 25;
+  transition: transform 0.15s ease;
+  max-width: 130px;
+}
+
+.milestone-item-mobile:active {
+  transform: scale(1.12);
+}
+
+/* Floating Icon Wrapper with bobbing animation */
+.item-icon-wrapper-mobile {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pixelFloatMobile 2.2s infinite ease-in-out;
+}
+
+@keyframes pixelFloatMobile {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.item-icon-wrapper-mobile img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
+}
+
+/* Ground Glow Aura / Pedestal */
+.item-aura-mobile {
+  width: 38px;
+  height: 8px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.65) 0%, rgba(250, 204, 21, 0) 80%);
+  animation: auraPulseMobile 2s infinite ease-in-out;
+}
+
+@keyframes auraPulseMobile {
+  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* Milestone Title & Subtitle Underneath */
+.milestone-text-col {
+  margin-top: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.milestone-title-text {
+  font-family: var(--font-retro);
+  font-size: 7.5px;
+  color: #facc15;
+  font-weight: bold;
+  line-height: 1.25;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  max-width: 125px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.milestone-sub-text {
+  font-family: var(--font-pixel);
+  font-size: 6.5px;
+  color: #38bdf8;
+  margin-top: 1px;
+  max-width: 115px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   THEMATIC RICH SCENERY OBJECTS FOR ALL 6 SCENARIOS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   STAGE 1: DEEP OCEAN ABYSS (ใต้ทะเลลึก รอยต่อสู่ฉาก 2 ต่อเนื่องไร้รอยต่อ)
+   -------------------------------------------------------------------------- */
+.theme-abyss {
+  background: linear-gradient(180deg, #03254c 0%, #021730 40%, #010d1c 70%, #010511 100%);
+}
+.theme-abyss .item-aura-mobile {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.8) 0%, transparent 80%);
+}
+
+.abyss-floor-vents {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(0deg, #01040a 0%, #020a16 65%, transparent 100%);
+  pointer-events: none;
+}
+
+.trench-mineral-smoker {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.4));
+}
+
+/* --------------------------------------------------------------------------
+   STAGE 2: OCEAN SUNLIGHT TO SURFACE (รอยต่อเชื่อมฉาก 1 ต่อเนื่อง ไต่สู่ผิวน้ำ)
+   -------------------------------------------------------------------------- */
+.theme-ocean {
+  background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 30%, #0284c7 65%, #03254c 100%);
+}
+.theme-ocean .item-aura-mobile {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.85) 0%, transparent 80%);
+}
+
+.ocean-sun-rays {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.12) 0px, transparent 25px, rgba(56, 189, 248, 0.14) 50px);
+  pointer-events: none;
+}
+
+/* Undersea Ruin Pillars & Corals */
+.ocean-ruin-pillar {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+}
+
+.ocean-jellyfish {
+  position: absolute;
+  pointer-events: none;
+  animation: jellyFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes jellyFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-16px); }
+}
+
+.ocean-bubble-item {
+  position: absolute;
+  border: 1px solid #7dd3fc;
+  border-radius: 50%;
+  background: rgba(224, 242, 254, 0.35);
+  pointer-events: none;
+  animation: bubbleRising 5s linear infinite;
+}
+
+@keyframes bubbleRising {
+  0% { transform: translateY(0) scale(0.8); opacity: 0.85; }
+  100% { transform: translateY(-400px) scale(1.2); opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   BOUNDARY GRAPHIC: OCEAN SURFACE WAVES (รอยต่อระหว่างฉาก 2 และ 3)
+   -------------------------------------------------------------------------- */
+.ocean-surface-waves-boundary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 85px;
+  pointer-events: none;
+  z-index: 20;
+  overflow: visible;
+}
+
+.wave-foam-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffffff;
+  pointer-events: none;
+  animation: foamBubbleFloat 2.2s infinite alternate ease-in-out;
+}
+
+@keyframes foamBubbleFloat {
+  0% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+  100% { transform: translateY(-8px) scale(1.25); opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   STAGE 3: SKY & ATMOSPHERE ASCENT (ท้องฟ้าชั้นล่าง รอยต่อเชื่อมสู่ฉาก 4)
+   -------------------------------------------------------------------------- */
+.theme-sky {
+  background: linear-gradient(180deg, #1d4ed8 0%, #2563eb 35%, #3b82f6 70%, #60a5fa 100%);
+}
+.theme-sky .item-aura-mobile {
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.85) 0%, transparent 80%);
+}
+
+.sky-passing-cloud {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.15));
+  animation: cloudDriftSlow 18s linear infinite alternate;
+}
+
+@keyframes cloudDriftSlow {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(24px); }
+}
+
+/* --------------------------------------------------------------------------
+   STAGE 4: EXOSPHERE TO ORBIT (ขอบชั้นบรรยากาศทะยานสู่อวกาศ)
+   -------------------------------------------------------------------------- */
+.theme-stratosphere {
+  background: linear-gradient(180deg, #03020c 0%, #0a061d 30%, #1e1b4b 65%, #1d4ed8 100%);
+}
+.theme-stratosphere .item-aura-mobile {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.85) 0%, transparent 80%);
+}
+
+/* Atmospheric Layer Radar Tags */
+.atmosphere-radar-tag {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed rgba(254, 240, 138, 0.35);
+  padding-top: 2px;
+  font-family: var(--font-retro);
+  font-size: 6px;
+  color: #fef08a;
+  pointer-events: none;
+}
+
+/* Rushing Pixel Clouds */
+.rocket-passing-cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 6px;
+  filter: blur(1px);
+  pointer-events: none;
+  animation: cloudZoomPast 2.8s linear infinite;
+}
+
+@keyframes cloudZoomPast {
+  0% { transform: translateY(-40px); opacity: 0; }
+  25% { opacity: 0.7; }
+  75% { opacity: 0.7; }
+  100% { transform: translateY(350px); opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   STAGE 5: OUTER SPACE ORBIT
+   -------------------------------------------------------------------------- */
+.theme-deep-space {
+  background: radial-gradient(ellipse at 50% 50%, #170b2e 0%, #070314 65%, #020108 100%);
+}
+.theme-deep-space .item-aura-mobile {
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.8) 0%, transparent 80%);
+}
+
+.space-earth-globe {
+  position: absolute;
+  bottom: 30px;
+  left: -20px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #38bdf8 0%, #0284c7 40%, #0f172a 80%);
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.4);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.space-star-pixel {
+  position: absolute;
+  background: #ffffff;
+  pointer-events: none;
+  animation: starTwinkleMobile 2s infinite alternate ease-in-out;
+}
+
+@keyframes starTwinkleMobile {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.4); }
+}
+
+.space-satellite-station {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+}
+
+/* --------------------------------------------------------------------------
+   BOUNDARY GRAPHIC: EVENT HORIZON (รอยต่อระหว่างฉาก 5 และ 6)
+   -------------------------------------------------------------------------- */
+.event-horizon-boundary {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 440px;
+  height: 150px;
+  pointer-events: none;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.accretion-disk-glow {
+  animation: accretionGlowPulse 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes accretionGlowPulse {
+  0% { filter: drop-shadow(0 0 10px #f59e0b) drop-shadow(0 0 24px rgba(251, 191, 36, 0.65)); opacity: 0.88; }
+  100% { filter: drop-shadow(0 0 20px #f97316) drop-shadow(0 0 42px rgba(245, 158, 11, 0.95)); opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   STAGE 6: 5TH DIMENSION TESSERACT
+   -------------------------------------------------------------------------- */
+.theme-tesseract {
+  background: linear-gradient(180deg, #120903 0%, #291507 40%, #1a0c04 70%, #0c0502 100%);
+}
+.theme-tesseract .item-aura-mobile {
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.8) 0%, transparent 80%);
+}
+
+.tesseract-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(251, 191, 36, 0.14) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 119, 6, 0.12) 1px, transparent 1px);
+  background-size: 32px 48px;
+  pointer-events: none;
+}
+
+.tesseract-string {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: linear-gradient(180deg, transparent, #fbbf24, #f59e0b, transparent);
+  box-shadow: 0 0 8px #f59e0b;
+  pointer-events: none;
+}
+
+/* Scenery Micro-Animations */
+.beacon-blink {
+  animation: beaconFlash 1s infinite steps(1);
+}
+@keyframes beaconFlash {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px #ef4444); }
+  50% { opacity: 0.2; filter: none; }
+}
+
+.quantum-float {
+  animation: quantumFloatAnim 3.8s ease-in-out infinite alternate;
+}
+@keyframes quantumFloatAnim {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-8px) rotate(4deg); }
+}
+
+.tesseract-core-pulse {
+  animation: tesseractCorePulse 2.8s ease-in-out infinite alternate;
+}
+@keyframes tesseractCorePulse {
+  0% { transform: translateX(-50%) scale(0.92); opacity: 0.75; }
+  100% { transform: translateX(-50%) scale(1.08); opacity: 1; filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.85)); }
+}
+
+.seaweed-sway {
+  animation: seaweedSwayAnim 3.2s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+@keyframes seaweedSwayAnim {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(5deg); }
+}
+
+.angler-glow {
+  animation: anglerGlowAnim 1.6s ease-in-out infinite alternate;
+}
+@keyframes anglerGlowAnim {
+  0% { filter: drop-shadow(0 0 3px #38bdf8); opacity: 0.6; }
+  100% { filter: drop-shadow(0 0 10px #38bdf8) drop-shadow(0 0 18px #e0f2fe); opacity: 1; }
+}
+
+.turtle-swim {
+  animation: turtleSwimAnim 5s ease-in-out infinite alternate;
+}
+@keyframes turtleSwimAnim {
+  0% { transform: translateY(0) rotate(-2deg); }
+  100% { transform: translateY(-12px) rotate(3deg); }
+}
+
+.balloon-float {
+  animation: balloonFloatAnim 4.5s ease-in-out infinite alternate;
+}
+@keyframes balloonFloatAnim {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-12px); }
+}
+
+/* ==========================================================================
+   Bottom Handheld Controls Bar (Clean 6 Stage Buttons Centered)
+   ========================================================================== */
+#mobile-bottom-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--controls-height);
+  z-index: 100;
+  background: rgba(3, 0, 20, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 2px solid #334155;
+  box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+/* Stage Switcher Pills */
+.stage-pills-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.stage-pill-btn {
+  width: 36px;
+  height: 38px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: var(--font-retro);
+  font-size: 7px;
+  color: #94a3b8;
+  transition: all 0.15s ease;
+}
+
+.stage-pill-btn.active {
+  background: #312e81;
+  border-color: #facc15;
+  color: #fef08a;
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.55);
+}
+
+/* ==========================================================================
+   Retro Dialog Modal Mobile Overrides
+   ========================================================================== */
+#retro-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+#retro-modal-overlay.open {
+  display: flex !important;
+  animation: modalFadeIn 0.18s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#retro-modal-window {
+  width: 100%;
+  max-width: 500px;
+  max-height: 86vh;
+  background: #020617;
+  border: 3px solid #facc15;
+  box-shadow: 0 0 25px rgba(250, 204, 21, 0.35), 0 10px 40px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#retro-modal-header {
+  padding: 8px 10px;
+  background: #1e1b4b;
+  border-bottom: 2px solid #facc15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+#retro-modal-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+}
+
+#retro-modal-body::-webkit-scrollbar {
+  width: 5px;
+}
+#retro-modal-body::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 2px;
+}

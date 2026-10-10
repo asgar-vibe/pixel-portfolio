@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Akira Waewbandhit (Asgar) | 16-Bit Mobile Vertical Adventure Resume</title>
+  <meta name="description"
+    content="Interactive mobile 16-bit retro vertical adventure resume of Akira Waewbandhit (Asgar), 13-year-old student prodigy in Mathematics, English, and Algorithmic Programming. Ascending through 6 thematic vertical scenarios: Magma Core, Ocean Abyss, Skyscraper Climb, Rocket Launch, Outer Space, and 5th Dimension Tesseract.">
+
+  <!-- Retro Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Mobile Custom CSS -->
+  <link rel="stylesheet" href="styles/mobile.css">
+</head>
+
+<body class="bg-slate-950 text-slate-100 select-none">
+  <!-- =========================================================================
+       Top HUD Bar (Matches PC Version Profile & Sound)
+       ========================================================================= -->
+  <header id="hud-header">
+    <!-- Left: Character Stats Card (Clickable to open RPG Status Sheet) -->
+    <div id="hud-profile-card"
+      class="flex items-center gap-2 shrink-0 cursor-pointer hover:border-yellow-300 transition-all active:translate-y-0.5"
+      title="Click to view ASGAR Status Sheet">
+      <div class="hud-avatar-box">
+        <!-- Mini profile photo -->
+        <img src="images/character/profile.jpg" alt="Asgar" class="w-full h-full object-cover rounded-sm pixel-crisp"
+          onerror="this.src='images/character/school_1.png';" />
+      </div>
+
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span id="hud-player-name" class="font-retro text-[8px] text-yellow-400 font-bold tracking-wider">
+            AKIRA (ASGAR)
+          </span>
+          <span id="hud-player-level" class="font-retro text-[6.5px] bg-red-600 px-1 py-0.5 text-white">
+            LVL 13
+          </span>
+        </div>
+        <div id="hud-player-title" class="font-pixel text-[8px] text-indigo-200 mt-0.5">
+          Panyarat High School • Secondary 2
+        </div>
+
+        <!-- EXP / World Progress Meter -->
+        <div class="retro-meter-container mt-0.5">
+          <span class="font-retro text-[6px] text-emerald-400">EXP</span>
+          <div class="retro-meter-bar">
+            <div id="hud-progress-fill" class="retro-meter-fill"></div>
+          </div>
+          <span id="hud-progress-text" class="font-retro text-[6px] text-slate-300">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Standalone Retro Audio Button -->
+    <button id="btn-toggle-sound" class="pixel-btn text-[8px] px-2.5 py-1.5 shrink-0"
+      title="Toggle 8-Bit Audio Sound FX">
+      🔊 SOUND
+    </button>
+  </header>
+
+  <!-- =========================================================================
+       Fixed Mobile Game Viewport
+       ========================================================================= -->
+  <main id="mobile-game-viewport">
+    <!-- Vertical World Track (Translates vertically so scenes move UP) -->
+    <div id="vertical-world-track"></div>
+
+    <!-- Animated Character Sprite Avatar (Walks, climbs, swims, rockets, floats) -->
+    <div id="character-container-mobile" title="Tap to view Asgar Status Sheet">
+      <div class="character-sprite-holder"></div>
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       Bottom Handheld Controls Bar (Only 6 Stage Quick Switcher Buttons)
+       ========================================================================= -->
+  <footer id="mobile-bottom-controls">
+    <!-- Center: Stage Quick Switcher Pills (1 to 6) -->
+    <div class="stage-pills-row">
+      <button class="stage-pill-btn active" data-stage-index="0" title="Stage 1: Deep Ocean Abyss">
+        <span class="text-[12px] leading-none">⚓</span>
+        <span class="mt-0.5 font-bold">1</span>
+      </button>
+      <button class="stage-pill-btn" data-stage-index="1" title="Stage 2: Ocean Surface">
+        <span class="text-[12px] leading-none">🐬</span>
+        <span class="mt-0.5 font-bold">2</span>
+      </button>
+      <button class="stage-pill-btn" data-stage-index="2" title="Stage 3: Sky Ascent">
+        <span class="text-[12px] leading-none">☁️</span>
+        <span class="mt-0.5 font-bold">3</span>
+      </button>
+      <button class="stage-pill-btn" data-stage-index="3" title="Stage 4: Exosphere to Orbit">
+        <span class="text-[12px] leading-none">🚀</span>
+        <span class="mt-0.5 font-bold">4</span>
+      </button>
+      <button class="stage-pill-btn" data-stage-index="4" title="Stage 5: Outer Space">
+        <span class="text-[12px] leading-none">🌌</span>
+        <span class="mt-0.5 font-bold">5</span>
+      </button>
+      <button class="stage-pill-btn" data-stage-index="5" title="Stage 6: 5D Tesseract">
+        <span class="text-[12px] leading-none">🪐</span>
+        <span class="mt-0.5 font-bold">6</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       Retro Dialog Modal Window (Inspect Milestones & Certificates)
+       ========================================================================= -->
+  <div id="retro-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="retro-modal-window">
+      <!-- Modal Header Bar -->
+      <div id="retro-modal-header">
+        <div class="flex items-center gap-2">
+          <span id="modal-header-icon" class="w-4 h-4 shrink-0 flex items-center justify-center">
+            <span class="w-3 h-3 bg-yellow-400 inline-block"></span>
+          </span>
+          <span id="modal-title"
+            class="font-retro text-[9px] md:text-xs text-yellow-300 uppercase tracking-wider truncate max-w-[65vw]">
+            ACHIEVEMENT ARCHIVE
+          </span>
+        </div>
+        <button id="retro-modal-close-btn" class="pixel-btn text-[8px] px-2 py-1 bg-red-700 border-red-300"
+          aria-label="Close modal">
+          ✕ CLOSE
+        </button>
+      </div>
+
+      <!-- Modal Body (Injected dynamically with multi-photo gallery & details) -->
+      <div id="retro-modal-body" class="p-3 md:p-4"></div>
+    </div>
+  </div>
+
+  <!-- Mobile Engine ES6 Module Entrypoint -->
+  <script type="module" src="js/mobile.js"></script>
+</body>
+
+</html>

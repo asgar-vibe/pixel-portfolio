@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Akira Waewbandhit (Asgar) | Select Mode (Desktop / Mobile)</title>
+  <meta name="description"
+    content="Select experience mode for the 16-Bit Retro Platformer Resume of Akira Waewbandhit (Asgar). Choose Desktop Mode (Classic Horizontal Scroller) or Mobile Mode (Vertical Ascension).">
+
+  <!-- Retro Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --font-retro: 'Press Start 2P', monospace;
+      --font-pixel: 'Silkscreen', monospace;
+      --font-terminal: 'VT323', monospace;
+    }
+
+    body {
+      background-color: #030014;
+      color: #f8fafc;
+      font-family: var(--font-pixel), monospace;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .font-retro { font-family: var(--font-retro), monospace; }
+    .font-pixel { font-family: var(--font-pixel), monospace; }
+    .font-terminal { font-family: var(--font-terminal), monospace; }
+
+    /* CRT Scanline Effect Overlay */
+    .scanlines-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* Animated Cosmic Dust & Grid Background */
+    .cosmic-grid-bg {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 50% 20%, #1e1035 0%, #08031a 50%, #020108 100%);
+      z-index: 1;
+    }
+
+    .retro-grid-floor {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 45vh;
+      background-image: 
+        linear-gradient(to right, rgba(250, 204, 21, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.15) 1px, transparent 1px);
+      background-size: 40px 30px;
+      transform: perspective(300px) rotateX(60deg);
+      transform-origin: bottom center;
+      z-index: 2;
+      opacity: 0.7;
+      animation: gridScroll 15s linear infinite;
+    }
+
+    @keyframes gridScroll {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 300px; }
+    }
+
+    /* Mode Selection Card */
+    .mode-card {
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(8px);
+      border: 3px solid #334155;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.03);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: #facc15;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(250, 204, 21, 0.45);
+    }
+
+    .mode-card.recommended {
+      border-color: #38bdf8;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(56, 189, 248, 0.35);
+    }
+
+    .mode-card.recommended:hover {
+      border-color: #facc15;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(250, 204, 21, 0.55);
+    }
+
+    /* Pixel Button */
+    .pixel-btn-action {
+      font-family: var(--font-retro);
+      font-size: 10px;
+      padding: 12px 18px;
+      border: 3px solid #ca8a04;
+      background: linear-gradient(180deg, #facc15 0%, #eab308 100%);
+      color: #0f172a;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 0 #854d0e, 0 8px 14px rgba(0, 0, 0, 0.6);
+      transition: all 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .pixel-btn-action:hover {
+      background: linear-gradient(180deg, #fef08a 0%, #facc15 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #854d0e, 0 10px 18px rgba(250, 204, 21, 0.4);
+    }
+
+    .pixel-btn-action:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #854d0e;
+    }
+
+    /* Floating Sprite Animation */
+    .floating-sprite {
+      animation: floatSprite 2.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatSprite {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+
+    /* Twinkling star particle */
+    .star-twinkle {
+      position: absolute;
+      background: #ffffff;
+      pointer-events: none;
+      animation: starTwinkle 2s infinite ease-in-out alternate;
+    }
+
+    @keyframes starTwinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.3); }
+    }
+  </style>
+</head>
+
+<body class="flex flex-col items-center justify-between min-h-screen relative p-4 md:p-8">
+  <!-- CRT Scanlines Overlay -->
+  <div class="scanlines-overlay"></div>
+
+  <!-- Cosmic Background & 3D Retro Grid Floor -->
+  <div class="cosmic-grid-bg"></div>
+  <div class="retro-grid-floor"></div>
+
+  <!-- =========================================================================
+       Header Section
+       ========================================================================= -->
+  <header class="relative z-10 text-center max-w-4xl mx-auto pt-4 md:pt-8 w-full">
+    <!-- Top Player Profile Pill -->
+    <div class="inline-flex items-center gap-3 px-4 py-2 bg-slate-900/90 border-2 border-yellow-400 rounded-md shadow-2xl mb-4">
+      <div class="w-10 h-10 bg-indigo-900 border-2 border-yellow-400 p-0.5 flex items-center justify-center shrink-0 overflow-hidden">
+        <img src="images/character/profile.jpg" alt="Asgar" class="w-full h-full object-cover rounded-sm"
+          onerror="this.src='images/character/school_1.png';" />
+      </div>
+      <div class="text-left">
+        <div class="flex items-center gap-2">
+          <span class="font-retro text-[9px] md:text-[11px] text-yellow-400 font-bold">AKIRA (ASGAR)</span>
+          <span class="font-retro text-[7px] md:text-[8px] bg-red-600 px-1.5 py-0.5 text-white">LVL 13</span>
+        </div>
+        <div class="font-pixel text-[9px] md:text-[10px] text-indigo-200 mt-0.5">
+          Panyarat High School • Secondary 2
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Game Title -->
+    <h1 class="font-retro text-xl sm:text-2xl md:text-3xl text-yellow-300 drop-shadow-[0_4px_12px_rgba(250,204,21,0.5)] tracking-wider uppercase mb-2">
+      16-BIT RESUME ADVENTURE
+    </h1>
+    <p class="font-pixel text-xs sm:text-sm md:text-base text-cyan-300 font-bold tracking-wide">
+      ✦ CHOOSE YOUR DISPLAY MODE / เลือกรูปแบบการเข้าชม ✦
+    </p>
+  </header>
+
+  <!-- =========================================================================
+       Mode Selection Cards (Desktop vs Mobile)
+       ========================================================================= -->
+  <main class="relative z-10 w-full max-w-5xl mx-auto my-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 px-2">
+    <!-- ========================================================
+         CARD 1: DESKTOP MODE
+         ======================================================== -->
+    <div id="card-desktop" class="mode-card rounded-lg p-6 flex flex-col justify-between" role="region" aria-label="Desktop Mode Selection">
+      <!-- Device Tag Banner -->
+      <div>
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <span class="font-retro text-[7.5px] md:text-[8.5px] px-2.5 py-1 bg-indigo-950 border border-indigo-400 text-indigo-200 uppercase font-bold">
+            🖥️ PC & MAC VIEW
+          </span>
+          <span id="badge-desktop-rec" class="hidden font-retro text-[7px] px-2 py-0.5 bg-emerald-600 text-white animate-pulse">
+            ★ RECOMMENDED
+          </span>
+        </div>
+
+        <!-- Card Title & Mode Concept -->
+        <h2 class="font-retro text-base md:text-lg text-white font-bold mb-1">
+          DESKTOP VERSION
+        </h2>
+        <div class="font-pixel text-xs text-amber-300 font-bold mb-4">
+          Classic Horizontal Platformer (Left to Right)
+        </div>
+
+        <!-- Sprite Illustration & Visual Preview -->
+        <div class="w-full h-32 bg-slate-950 border-2 border-slate-700 rounded-md p-3 mb-4 flex items-center justify-around relative overflow-hidden">
+          <!-- Background Scene Glow -->
+          <div class="absolute inset-0 bg-gradient-to-r from-purple-950/40 via-blue-950/40 to-slate-950/40 pointer-events-none"></div>
+
+          <!-- Character Walking Preview -->
+          <div class="w-16 h-20 shrink-0 floating-sprite flex flex-col items-center justify-end z-10">
+            <img src="images/character/school_1.png" alt="Desktop Asgar Sprite" class="w-full h-full object-contain filter drop-shadow" />
+            <span class="font-retro text-[6px] text-yellow-400 mt-1">WALK [→]</span>
+          </div>
+
+          <!-- Features List Column -->
+          <div class="space-y-1.5 z-10 text-left pl-2">
+            <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
+              <span class="text-yellow-400">▶</span>
+              <span>Horizontal Camera & Pan</span>
+            </div>
+            <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
+              <span class="text-cyan-400">▶</span>
+              <span>Arrow Keys [← →] / Wheel</span>
+            </div>
+            <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
+              <span class="text-emerald-400">▶</span>
+              <span>6 Horizontal Retro Stages</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description Note -->
+        <p class="font-pixel text-[11px] text-slate-300 leading-relaxed mb-6">
+          เหมาะที่สุดสำหรับดูบนหน้าจอคอมพิวเตอร์ โน้ตบุ๊ก หรือแท็บเล็ตแนวนอน เดินผ่าน 6 ด่านเมืองหลวง, ป่า, ถ้ำคริสตัล, ใต้ทะเล, ธารน้ำแข็ง และอวกาศ
+        </p>
+      </div>
+
+      <!-- Action Button -->
+      <a href="desktop.html" class="pixel-btn-action w-full" id="btn-enter-desktop">
+        <span>ENTER DESKTOP MODE</span>
+        <span>🖥️</span>
+      </a>
+    </div>
+
+    <!-- ========================================================
+         CARD 2: MOBILE MODE
+         ======================================================== -->
+    <div id="card-mobile" class="mode-card rounded-lg p-6 flex flex-col justify-between" role="region" aria-label="Mobile Mode Selection">
+      <!-- Device Tag Banner -->
+      <div>
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <span class="font-retro text-[7.5px] md:text-[8.5px] px-2.5 py-1 bg-purple-950 border border-purple-400 text-purple-200 uppercase font-bold">
+            📱 MOBILE & TOUCH VIEW
+          </span>
+          <span id="badge-mobile-rec" class="hidden font-retro text-[7px] px-2 py-0.5 bg-emerald-600 text-white animate-pulse">
+            ★ RECOMMENDED
+          </span>
+        </div>
+
+        <!-- Card Title & Mode Concept -->
+        <h2 class="font-retro text-base md:text-lg text-white font-bold mb-1">
+          MOBILE VERSION
+        </h2>
+        <div class="font-pixel text-xs text-amber-300 font-bold mb-4">
+          Vertical Ascension (Bottom to Top)
+        </div>
+
+        <!-- Sprite Illustration & Visual Preview -->
+        <div class="w-full h-32 bg-slate-950 border-2 border-slate-700 rounded-md p-3 mb-4 flex items-center justify-around relative overflow-hidden">
+          <!-- Background Scene Glow -->
+          <div class="absolute inset-0 bg-gradient-to-t from-red-950/40 via-sky-950/40 to-amber-950/40 pointer-events-none"></div>
+
+          <!-- Character Ascension Preview -->
+          <div class="w-16 h-20 shrink-0 floating-sprite flex flex-col items-center justify-end z-10">
+            <img src="images/character/astronaut_1.png" alt="Mobile Asgar Astronaut" class="w-full h-full object-contain filter drop-shadow" />
+            <span class="font-retro text-[6px] text-cyan-300 mt-1">ASCEND [↑]</span>
+          </div>
+
+          <!-- Features List Column -->
+          <div class="space-y-1.5 z-10 text-left pl-2">
+            <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
+              <span class="text-orange-400">▲</span>
+              <span>Vertical Climb (ล่างขึ้นบน)</span>
+            </div>
+            <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
+              <span class="text-sky-400">▲</span>
+              <span>Touch Swipe & D-Pad ล่างจอ</span>
+            </div>
+            <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
+              <span class="text-yellow-400">▲</span>
+              <span>แม็คม่า ➔ ผิวน้ำ ➔ ยอดตึก ➔ จรวด ➔ มิติที่ 5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description Note -->
+        <p class="font-pixel text-[11px] text-slate-300 leading-relaxed mb-6">
+          ออกแบบสำหรับสมาร์ทโฟนโดยเฉพาะ! ทะยานจากชั้นแม็คม่าใต้พื้นโลก ดำน้ำขึ้นสู่ผิวน้ำ ปีนยอดตึกระฟ้า ทะยานจรวดสู่บรรยากาศ และลอยตัวในมิติที่ 5
+        </p>
+      </div>
+
+      <!-- Action Button -->
+      <a href="mobile.html" class="pixel-btn-action w-full" id="btn-enter-mobile">
+        <span>ENTER MOBILE MODE</span>
+        <span>📱</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       Footer Info & Audio Controls
+       ========================================================================= -->
+  <footer class="relative z-10 text-center text-slate-400 font-pixel text-xs py-4 w-full max-w-4xl mx-auto">
+    <div class="flex flex-wrap items-center justify-center gap-4 text-slate-400 text-[10px] md:text-[11px]">
+      <span>AKIRA WAEWBANDHIT (ASGAR)</span>
+      <span>•</span>
+      <span>16-BIT RETRO PLATFORMER PORTFOLIO</span>
+      <span>•</span>
+      <span>PANYARAT HIGH SCHOOL</span>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       Interactive Audio & Auto-Detection Script
+       ========================================================================= -->
+  <script>
+    // 8-Bit Synthesizer Sound Generator for Menu Blips
+    let audioCtx = null;
+    function playBeep(freq = 440, duration = 0.08, type = 'square') {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    // Play confirm fanfare
+    function playConfirm() {
+      playBeep(440, 0.06);
+      setTimeout(() => playBeep(880, 0.12), 60);
+    }
+
+    // Sound listeners on hover & click
+    document.querySelectorAll('.pixel-btn-action, .mode-card').forEach(el => {
+      el.addEventListener('mouseenter', () => playBeep(520, 0.04));
+      el.addEventListener('touchstart', () => playBeep(520, 0.04), { passive: true });
+    });
+
+    document.querySelectorAll('.pixel-btn-action').forEach(el => {
+      el.addEventListener('click', () => playConfirm());
+    });
+
+    // Smart Device Detection & Recommendation Highlight
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+
+    const cardMobile = document.getElementById('card-mobile');
+    const badgeMobile = document.getElementById('badge-mobile-rec');
+    const cardDesktop = document.getElementById('card-desktop');
+    const badgeDesktop = document.getElementById('badge-desktop-rec');
+
+    if (isMobileDevice) {
+      if (cardMobile) cardMobile.classList.add('recommended');
+      if (badgeMobile) badgeMobile.classList.remove('hidden');
+    } else {
+      if (cardDesktop) cardDesktop.classList.add('recommended');
+      if (badgeDesktop) badgeDesktop.classList.remove('hidden');
+    }
+  </script>
+</body>
+
+</html>
