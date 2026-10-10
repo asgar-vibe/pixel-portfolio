@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Akira Waewbandhit (Asgar) | Select Mode (Desktop / Mobile)</title>
   <meta name="description"
     content="Select experience mode for the 16-Bit Retro Platformer Resume of Akira Waewbandhit (Asgar). Choose Desktop Mode (Classic Horizontal Scroller) or Mobile Mode (Vertical Ascension).">
@@ -37,9 +38,17 @@
       image-rendering: crisp-edges;
     }
 
-    .font-retro { font-family: var(--font-retro), monospace; }
-    .font-pixel { font-family: var(--font-pixel), monospace; }
-    .font-terminal { font-family: var(--font-terminal), monospace; }
+    .font-retro {
+      font-family: var(--font-retro), monospace;
+    }
+
+    .font-pixel {
+      font-family: var(--font-pixel), monospace;
+    }
+
+    .font-terminal {
+      font-family: var(--font-terminal), monospace;
+    }
 
     /* CRT Scanline Effect Overlay */
     .scanlines-overlay {
@@ -56,7 +65,7 @@
     .cosmic-grid-bg {
       position: fixed;
       inset: 0;
-      background: 
+      background:
         radial-gradient(circle at 50% 20%, #1e1035 0%, #08031a 50%, #020108 100%);
       z-index: 1;
     }
@@ -67,7 +76,7 @@
       left: 0;
       right: 0;
       height: 45vh;
-      background-image: 
+      background-image:
         linear-gradient(to right, rgba(250, 204, 21, 0.12) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(56, 189, 248, 0.15) 1px, transparent 1px);
       background-size: 40px 30px;
@@ -79,8 +88,13 @@
     }
 
     @keyframes gridScroll {
-      0% { background-position: 0 0; }
-      100% { background-position: 0 300px; }
+      0% {
+        background-position: 0 0;
+      }
+
+      100% {
+        background-position: 0 300px;
+      }
     }
 
     /* Mode Selection Card */
@@ -148,8 +162,13 @@
     }
 
     @keyframes floatSprite {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-8px); }
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-8px);
+      }
     }
 
     /* Twinkling star particle */
@@ -161,8 +180,15 @@
     }
 
     @keyframes starTwinkle {
-      0% { opacity: 0.2; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.3); }
+      0% {
+        opacity: 0.2;
+        transform: scale(0.8);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1.3);
+      }
     }
   </style>
 </head>
@@ -180,8 +206,10 @@
        ========================================================================= -->
   <header class="relative z-10 text-center max-w-4xl mx-auto pt-4 md:pt-8 w-full">
     <!-- Top Player Profile Pill -->
-    <div class="inline-flex items-center gap-3 px-4 py-2 bg-slate-900/90 border-2 border-yellow-400 rounded-md shadow-2xl mb-4">
-      <div class="w-10 h-10 bg-indigo-900 border-2 border-yellow-400 p-0.5 flex items-center justify-center shrink-0 overflow-hidden">
+    <div
+      class="inline-flex items-center gap-3 px-4 py-2 bg-slate-900/90 border-2 border-yellow-400 rounded-md shadow-2xl mb-4">
+      <div
+        class="w-10 h-10 bg-indigo-900 border-2 border-yellow-400 p-0.5 flex items-center justify-center shrink-0 overflow-hidden">
         <img src="images/character/profile.jpg" alt="Asgar" class="w-full h-full object-cover rounded-sm"
           onerror="this.src='images/character/school_1.png';" />
       </div>
@@ -197,11 +225,12 @@
     </div>
 
     <!-- Main Game Title -->
-    <h1 class="font-retro text-xl sm:text-2xl md:text-3xl text-yellow-300 drop-shadow-[0_4px_12px_rgba(250,204,21,0.5)] tracking-wider uppercase mb-2">
+    <h1
+      class="font-retro text-xl sm:text-2xl md:text-3xl text-yellow-300 drop-shadow-[0_4px_12px_rgba(250,204,21,0.5)] tracking-wider uppercase mb-2">
       16-BIT RESUME ADVENTURE
     </h1>
     <p class="font-pixel text-xs sm:text-sm md:text-base text-cyan-300 font-bold tracking-wide">
-      ✦ CHOOSE YOUR DISPLAY MODE / เลือกรูปแบบการเข้าชม ✦
+      ✦ CHOOSE YOUR DISPLAY MODE ✦
     </p>
   </header>
 
@@ -212,14 +241,17 @@
     <!-- ========================================================
          CARD 1: DESKTOP MODE
          ======================================================== -->
-    <div id="card-desktop" class="mode-card rounded-lg p-6 flex flex-col justify-between" role="region" aria-label="Desktop Mode Selection">
+    <div id="card-desktop" class="mode-card rounded-lg p-6 flex flex-col justify-between" role="region"
+      aria-label="Desktop Mode Selection">
       <!-- Device Tag Banner -->
       <div>
         <div class="flex items-center justify-between gap-2 mb-4">
-          <span class="font-retro text-[7.5px] md:text-[8.5px] px-2.5 py-1 bg-indigo-950 border border-indigo-400 text-indigo-200 uppercase font-bold">
+          <span
+            class="font-retro text-[7.5px] md:text-[8.5px] px-2.5 py-1 bg-indigo-950 border border-indigo-400 text-indigo-200 uppercase font-bold">
             🖥️ PC & MAC VIEW
           </span>
-          <span id="badge-desktop-rec" class="hidden font-retro text-[7px] px-2 py-0.5 bg-emerald-600 text-white animate-pulse">
+          <span id="badge-desktop-rec"
+            class="hidden font-retro text-[7px] px-2 py-0.5 bg-emerald-600 text-white animate-pulse">
             ★ RECOMMENDED
           </span>
         </div>
@@ -233,14 +265,18 @@
         </div>
 
         <!-- Sprite Illustration & Visual Preview -->
-        <div class="w-full h-32 bg-slate-950 border-2 border-slate-700 rounded-md p-3 mb-4 flex items-center justify-around relative overflow-hidden">
+        <div
+          class="w-full h-32 bg-slate-950 border-2 border-slate-700 rounded-md p-3 mb-4 flex items-center justify-around relative overflow-hidden">
           <!-- Background Scene Glow -->
-          <div class="absolute inset-0 bg-gradient-to-r from-purple-950/40 via-blue-950/40 to-slate-950/40 pointer-events-none"></div>
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-purple-950/40 via-blue-950/40 to-slate-950/40 pointer-events-none">
+          </div>
 
           <!-- Character Walking Preview -->
           <div class="w-16 h-20 shrink-0 floating-sprite flex flex-col items-center justify-end z-10">
-            <img src="images/character/school_1.png" alt="Desktop Asgar Sprite" class="w-full h-full object-contain filter drop-shadow" />
-            <span class="font-retro text-[6px] text-yellow-400 mt-1">WALK [→]</span>
+            <img src="images/character/school_1.png" alt="Desktop Asgar Sprite"
+              class="w-full h-full object-contain filter drop-shadow" />
+            <!-- <span class="font-retro text-[6px] text-yellow-400 mt-1">WALK [→]</span> -->
           </div>
 
           <!-- Features List Column -->
@@ -262,7 +298,8 @@
 
         <!-- Description Note -->
         <p class="font-pixel text-[11px] text-slate-300 leading-relaxed mb-6">
-          เหมาะที่สุดสำหรับดูบนหน้าจอคอมพิวเตอร์ โน้ตบุ๊ก หรือแท็บเล็ตแนวนอน เดินผ่าน 6 ด่านเมืองหลวง, ป่า, ถ้ำคริสตัล, ใต้ทะเล, ธารน้ำแข็ง และอวกาศ
+          Best played on desktop or laptop screens. Traverse through 6 retro stages: city, jungle, crystal cave,
+          deep sea, ice cave and space.
         </p>
       </div>
 
@@ -276,14 +313,17 @@
     <!-- ========================================================
          CARD 2: MOBILE MODE
          ======================================================== -->
-    <div id="card-mobile" class="mode-card rounded-lg p-6 flex flex-col justify-between" role="region" aria-label="Mobile Mode Selection">
+    <div id="card-mobile" class="mode-card rounded-lg p-6 flex flex-col justify-between" role="region"
+      aria-label="Mobile Mode Selection">
       <!-- Device Tag Banner -->
       <div>
         <div class="flex items-center justify-between gap-2 mb-4">
-          <span class="font-retro text-[7.5px] md:text-[8.5px] px-2.5 py-1 bg-purple-950 border border-purple-400 text-purple-200 uppercase font-bold">
+          <span
+            class="font-retro text-[7.5px] md:text-[8.5px] px-2.5 py-1 bg-purple-950 border border-purple-400 text-purple-200 uppercase font-bold">
             📱 MOBILE & TOUCH VIEW
           </span>
-          <span id="badge-mobile-rec" class="hidden font-retro text-[7px] px-2 py-0.5 bg-emerald-600 text-white animate-pulse">
+          <span id="badge-mobile-rec"
+            class="hidden font-retro text-[7px] px-2 py-0.5 bg-emerald-600 text-white animate-pulse">
             ★ RECOMMENDED
           </span>
         </div>
@@ -297,36 +337,41 @@
         </div>
 
         <!-- Sprite Illustration & Visual Preview -->
-        <div class="w-full h-32 bg-slate-950 border-2 border-slate-700 rounded-md p-3 mb-4 flex items-center justify-around relative overflow-hidden">
+        <div
+          class="w-full h-32 bg-slate-950 border-2 border-slate-700 rounded-md p-3 mb-4 flex items-center justify-around relative overflow-hidden">
           <!-- Background Scene Glow -->
-          <div class="absolute inset-0 bg-gradient-to-t from-red-950/40 via-sky-950/40 to-amber-950/40 pointer-events-none"></div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-red-950/40 via-sky-950/40 to-amber-950/40 pointer-events-none">
+          </div>
 
           <!-- Character Ascension Preview -->
           <div class="w-16 h-20 shrink-0 floating-sprite flex flex-col items-center justify-end z-10">
-            <img src="images/character/astronaut_1.png" alt="Mobile Asgar Astronaut" class="w-full h-full object-contain filter drop-shadow" />
-            <span class="font-retro text-[6px] text-cyan-300 mt-1">ASCEND [↑]</span>
+            <img src="images/character/astronaut_1.png" alt="Mobile Asgar Astronaut"
+              class="w-full h-full object-contain filter drop-shadow" />
+            <!-- <span class="font-retro text-[6px] text-cyan-300 mt-1">ASCEND [↑]</span> -->
           </div>
 
           <!-- Features List Column -->
           <div class="space-y-1.5 z-10 text-left pl-2">
             <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
               <span class="text-orange-400">▲</span>
-              <span>Vertical Climb (ล่างขึ้นบน)</span>
+              <span>Vertical Climb</span>
             </div>
             <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
               <span class="text-sky-400">▲</span>
-              <span>Touch Swipe & D-Pad ล่างจอ</span>
+              <span>Touch & Swipe</span>
             </div>
             <div class="flex items-center gap-1.5 font-pixel text-[10px] md:text-[11px] text-slate-200">
               <span class="text-yellow-400">▲</span>
-              <span>แม็คม่า ➔ ผิวน้ำ ➔ ยอดตึก ➔ จรวด ➔ มิติที่ 5</span>
+              <span>Deep Sea ➔ Sky ➔ Space ➔ Tesseract</span>
             </div>
           </div>
         </div>
 
         <!-- Description Note -->
         <p class="font-pixel text-[11px] text-slate-300 leading-relaxed mb-6">
-          ออกแบบสำหรับสมาร์ทโฟนโดยเฉพาะ! ทะยานจากชั้นแม็คม่าใต้พื้นโลก ดำน้ำขึ้นสู่ผิวน้ำ ปีนยอดตึกระฟ้า ทะยานจรวดสู่บรรยากาศ และลอยตัวในมิติที่ 5
+          Mobile-optimized 16-bit vertical climbing platformer. Control Asgar as he ascends from the deep sea, outer
+          space, and finally into the Tesseract dimension.
         </p>
       </div>
 
@@ -342,12 +387,12 @@
        Footer Info & Audio Controls
        ========================================================================= -->
   <footer class="relative z-10 text-center text-slate-400 font-pixel text-xs py-4 w-full max-w-4xl mx-auto">
-    <div class="flex flex-wrap items-center justify-center gap-4 text-slate-400 text-[10px] md:text-[11px]">
+    <div class="flex flex-wrap items-center justify-center gap-4 text-slate-400 text-[11px] md:text-[12px]">
       <span>AKIRA WAEWBANDHIT (ASGAR)</span>
       <span>•</span>
       <span>16-BIT RETRO PLATFORMER PORTFOLIO</span>
-      <span>•</span>
-      <span>PANYARAT HIGH SCHOOL</span>
+      <!-- <span>•</span>
+      <span>PANYARAT HIGH SCHOOL</span> -->
     </div>
   </footer>
 
@@ -375,7 +420,7 @@
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     // Play confirm fanfare
